@@ -1,0 +1,75 @@
+﻿<Window x:Class="WpfPorkProcessSystem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfPorkProcessSystem"
+        mc:Ignorable="d"
+        Title="KFM - Kill Floor Management" Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel>
+        <!-- Menu Principal -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Forms">
+                <MenuItem Header="_Product" Click="MenuProduct_Click"/>
+                <MenuItem Header="_Classification Weighing" Click="MenuClassification_Click"/>
+                <Separator/>
+                <MenuItem Header="_Spray Chambers" Click="MenuChambers_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Operation">
+                <MenuItem Header="_Production Order" Click="MenuProductionOrder_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Reports">
+                <MenuItem Header="Chamber Status" Click="MenuRepChambers_Click"/>
+                <MenuItem Header="Production" Click="MenuRepProduction_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Barra de Status -->
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText" Text="Ready"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- Área de Conteúdo Principal -->
+        <Grid>
+            <ContentControl x:Name="ContentArea">
+                <Border Background="#F0F0F0" CornerRadius="5" Margin="20">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Carcass and Stock Chamber Management" 
+                                   FontSize="30" 
+                                   FontWeight="Bold" 
+                                   Foreground="#333333"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,20"/>
+                        <TextBlock Text="This is a simple C# WPF project test." 
+                                   FontSize="20" 
+                                   FontWeight="Light" 
+                                   Foreground="#333333"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,20"/>
+                        <TextBlock Text="It's a POC for a complete web application" 
+                                   FontSize="20" 
+                                   FontWeight="Light" 
+                                   Foreground="#333333"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,20"/>
+                        <TextBlock Text="The goal is test a system to control kill floor management industry," 
+                                   FontSize="20" 
+                                   FontWeight="Light" 
+                                   Foreground="#333333"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,20"/>
+                        <TextBlock Text="By pork and beef." 
+                                   FontSize="20" 
+                                   FontWeight="Light" 
+                                   Foreground="#333333"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,20"/>
+                    </StackPanel>
+                </Border>
+            </ContentControl>
+        </Grid>
+    </DockPanel>
+</Window>

@@ -1,0 +1,44 @@
+namespace WpfPorkProcessSystem.Models;
+
+/// <summary>
+/// PO Production Order Item model.
+/// It's configure how distribute the carcasses and weighing of a production order 
+/// in the different steps of the process, like classification, spray chamber, etc.
+/// Only entrance type orders will use this model, 
+/// because the leave type orders only need to register the total weight of the carcasses.
+/// </summary>
+public class ProductionOrderItemModel : BaseModel
+{
+    public int ProductionOrderId { get; set; }
+
+    /// <summary>
+    /// Determine the sequence of the organization to use for distribute carcasses.
+    /// </summary>
+    public int Sequential { get; set; }
+
+    /// <summary>
+    /// Chamber where the carcasses will be stocked.
+    /// </summary>
+    public int SprayChamberId { get; set; }
+
+    /// <summary>
+    /// Registry historical chamber capacity of carcasses.
+    /// </summary>
+    public int SprayChamberCapacity { get; set; }
+
+    /// <summary>
+    /// Registry historical chamber stock of carcasses.
+    /// </summary>
+    public int SprayChamberStock { get; set; }
+
+    /// <summary>
+    /// String with the classifications names, separated by comma.
+    /// Used to validate carcass for destinate to chamber.    
+    /// </summary>
+    public string AcceptClassifications { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the list of accepted classification identifiers.
+    /// </summary>
+    public int[] AcceptClassificationIds { get; set; } = [];    
+}
