@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfPorkProcessSystem"
         mc:Ignorable="d"
         Title="KFM - Kill Floor Management" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <DockPanel>
         <!-- Menu Principal -->
         <Menu DockPanel.Dock="Top">

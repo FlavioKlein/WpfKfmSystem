@@ -110,7 +110,7 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
         {
             Id = Id ?? 0,
             OrderNumber = int.TryParse(TxtOrderNumber.Text, out var orderNum) ? orderNum : 0,
-            Status = (ProductionOrderStatusType)(CmbStatus.SelectedItem ?? ProductionOrderStatusType.Active),
+            Status = (ProductionOrderStatusType)(CmbStatus.SelectedItem ?? ProductionOrderStatusType.Pending),
             Type = (WeighingType)(CmbType.SelectedItem ?? WeighingType.SprayChamberEntrance),
             ProductId = CmbProduct.SelectedValue != null ? (int)CmbProduct.SelectedValue : 0,
             Product = CmbProduct.SelectedItem as ProductModel,

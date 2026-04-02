@@ -38,7 +38,7 @@ public static class DataSeeder
         // Order 1 = Entrance
         var order = new ProductionOrderModel();
         order.Id = 1;
-        order.Status = ProductionOrderStatusType.Inactive;
+        order.Status = ProductionOrderStatusType.Finalized;
         order.Type = WeighingType.SprayChamberEntrance;
         order.OrderNumber = 1;
         order.ProductId = 1;
@@ -59,11 +59,12 @@ public static class DataSeeder
         //Order 2 = Exit
         order = new ProductionOrderModel();
         order.Id = 2;
-        order.Status = ProductionOrderStatusType.Inactive;
+        order.Status = ProductionOrderStatusType.Finalized;
         order.Type = WeighingType.SprayChamberExit;
         order.ProductId = 1;
         order.Product = product;
         order.OrderNumber = 2;
+        order.EntranceOrderNumber = 1;
         order.WeighingScaleId = 1;
         order.ExecutionDate = executionDate.AddDays(1);
         order.FacturingDate = order.ExecutionDate;
@@ -84,7 +85,7 @@ public static class DataSeeder
         var listChamber = db.GetCollection<SprayChamberModel>().OrderBy(c => c.Id);
 
         order.Items = [];
-        order.Notes = []; // Initialize Notes list ONCE, before the loop
+        order.Notes = [];
 
         foreach (var chamber in listChamber)
         {
