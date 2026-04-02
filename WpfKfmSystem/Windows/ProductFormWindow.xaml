@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfPorkProcessSystem.Windows.Base"
         mc:Ignorable="d"
         Title="Product Form" 
-        Height="250" 
+        Height="300" 
         Width="500"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
@@ -35,19 +35,10 @@
         </StackPanel>
 
         <!-- Campo Nome -->
-        <Grid Grid.Row="2" Margin="0,0,0,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.Column="0" Text="Name:*" VerticalAlignment="Center" FontWeight="Bold"/>
-            <TextBox Grid.Column="1" 
-                     x:Name="TxtName" 
-                     VerticalAlignment="Center"
-                     Padding="5"
-                     FontSize="14"/>
-        </Grid>
+        <StackPanel Grid.Row="2" Margin="0,0,0,15">
+            <TextBlock Text="Name:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+            <TextBox x:Name="TxtName" Padding="5" FontSize="14"/>
+        </StackPanel>
 
         <!-- Mensagem de Validação -->
         <TextBlock Grid.Row="3" 

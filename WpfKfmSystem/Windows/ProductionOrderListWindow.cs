@@ -36,13 +36,6 @@ public class ProductionOrderListWindow : BaseListWindow<ProductionOrderModel, Pr
 
         dataGrid.Columns.Add(new DataGridTextColumn
         {
-            Header = "Order #",
-            Binding = new Binding("OrderNumber"),
-            Width = new DataGridLength(80)
-        });
-
-        dataGrid.Columns.Add(new DataGridTextColumn
-        {
             Header = "Status",
             Binding = new Binding("Status"),
             Width = new DataGridLength(100)
@@ -99,6 +92,6 @@ public class ProductionOrderListWindow : BaseListWindow<ProductionOrderModel, Pr
     /// </summary>
     protected override Func<ProductionOrderModel, string> GetSearchProperty()
     {
-        return order => $"{order.OrderNumber} {order.Product?.Name} {order.Status} {order.Type}";
+        return order => $"{order.Id} {order.Product?.Name} {order.Status} {order.Type}";
     }
 }

@@ -22,8 +22,8 @@ public static class DataSeeder
     {
         _ = db.GetCollection<WeighingScaleModel>();
 
-        db.Add<WeighingScaleModel>(new() { Id = 1, Name = "Tendal de Entrada Aspersão" });
-        db.Add<WeighingScaleModel>(new() { Id = 2, Name = "Tendal de Saída Aspersão" });
+        db.Add<WeighingScaleModel>(new() { Id = 1, Name = "Tendal de Entrada Aspersão", Type = WeighingScaleType.Tent });
+        db.Add<WeighingScaleModel>(new() { Id = 2, Name = "Tendal de Saída Aspersão", Type = WeighingScaleType.Tent });
     }
 
     private static void SeedProductionOrder(InMemoryDatabase db)
@@ -39,8 +39,7 @@ public static class DataSeeder
         var order = new ProductionOrderModel();
         order.Id = 1;
         order.Status = ProductionOrderStatusType.Finalized;
-        order.Type = WeighingType.SprayChamberEntrance;
-        order.OrderNumber = 1;
+        order.Type = WeighingType.SprayChamberEntrance;        
         order.ProductId = 1;
         order.Product = product;
         order.WeighingScaleId = 1;
@@ -62,8 +61,7 @@ public static class DataSeeder
         order.Status = ProductionOrderStatusType.Finalized;
         order.Type = WeighingType.SprayChamberExit;
         order.ProductId = 1;
-        order.Product = product;
-        order.OrderNumber = 2;
+        order.Product = product;        
         order.EntranceOrderNumber = 1;
         order.WeighingScaleId = 1;
         order.ExecutionDate = executionDate.AddDays(1);

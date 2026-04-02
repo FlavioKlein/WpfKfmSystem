@@ -28,47 +28,46 @@
                    Margin="0,0,0,20"/>
 
         <!-- Campos -->
-        <StackPanel Grid.Row="1">
-            <!-- Spray Chamber -->
-            <Grid Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Spray Chamber:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                <ComboBox Grid.Column="1" x:Name="CmbSprayChamber" VerticalAlignment="Center" Padding="5" FontSize="14" 
-                          DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="CmbSprayChamber_SelectionChanged"/>
-            </Grid>
-
-            <!-- Chamber Capacity (Read-only) -->
-            <Grid Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Chamber Capacity:" VerticalAlignment="Center" FontWeight="Bold"/>
-                <TextBox Grid.Column="1" x:Name="TxtChamberCapacity" VerticalAlignment="Center" Padding="5" FontSize="14" IsReadOnly="True" Background="#F0F0F0"/>
-            </Grid>
-
-            <!-- Chamber Stock (Read-only) -->
-            <Grid Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="180"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Chamber Stock:" VerticalAlignment="Center" FontWeight="Bold"/>
-                <TextBox Grid.Column="1" x:Name="TxtChamberStock" VerticalAlignment="Center" Padding="5" FontSize="14" IsReadOnly="True" Background="#F0F0F0"/>
-            </Grid>
-        </StackPanel>
-
-        <!-- Accept Classifications Section -->
-        <Grid Grid.Row="2" Margin="0,10,0,0">
+        <Grid Grid.Row="1" Margin="0,0,0,15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Accept Classifications:*" FontWeight="Bold" Margin="0,0,0,5"/>
+            <!-- Spray Chamber (Full Width) -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                <TextBlock Text="Spray Chamber:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+                <ComboBox x:Name="CmbSprayChamber" Padding="5" FontSize="14" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="CmbSprayChamber_SelectionChanged"/>
+            </StackPanel>
+
+            <!-- Chamber Capacity and Stock (2-column) -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Chamber Capacity:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+                    <TextBox x:Name="TxtChamberCapacity" Padding="5" FontSize="14" IsReadOnly="True" Background="#F0F0F0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Chamber Stock:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+                    <TextBox x:Name="TxtChamberStock" Padding="5" FontSize="14" IsReadOnly="True" Background="#F0F0F0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Accept Classifications Section -->
+        <Grid Grid.Row="2" Margin="0,0,0,15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Accept Classifications:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
             
             <Border Grid.Row="1" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="3" MaxHeight="120">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">

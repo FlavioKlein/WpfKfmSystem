@@ -12,7 +12,6 @@ public class ProductionOrderModel : BaseModel
     /// Entrance or Leave spray chamber.
     /// </summary>
     public WeighingType Type { get; set; }
-    public int OrderNumber { get; set; }
 
     /// <summary>
     /// Only in type SprayChamberExit for link to the corresponding entrance order.

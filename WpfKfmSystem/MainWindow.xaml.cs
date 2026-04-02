@@ -12,6 +12,7 @@ namespace WpfPorkProcessSystem
         private readonly ProductService _productService;
         private readonly ClassificationWeighingService _classificationService;
         private readonly SprayChamberService _chamberService;
+        private readonly WeighingScaleService _weighingScaleService;
 
         public MainWindow()
         {
@@ -20,6 +21,7 @@ namespace WpfPorkProcessSystem
             _productService = new ProductService();
             _classificationService = new ClassificationWeighingService();
             _chamberService = new SprayChamberService();
+            _weighingScaleService = new WeighingScaleService();
         }
 
         private void MenuProduct_Click(object sender, RoutedEventArgs e)
@@ -59,6 +61,19 @@ namespace WpfPorkProcessSystem
             window.ShowDialog();
 
             UpdateStatus("Pronto");
+        }
+
+        private void MenuWeighingScales_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateStatus("Opening weighing scales form...");
+
+            var window = new Windows.WeighingScaleListWindow
+            {
+                Owner = this
+            };
+            window.ShowDialog();
+
+            UpdateStatus("Ready");
         }
 
         private void MenuProductionOrder_Click(object sender, RoutedEventArgs e)

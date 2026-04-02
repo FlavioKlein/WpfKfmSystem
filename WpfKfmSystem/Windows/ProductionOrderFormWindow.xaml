@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:WpfPorkProcessSystem.Windows.Base"
         mc:Ignorable="d"
         Title="Production Order Form" 
-        Height="750" 
-        Width="900"
+        Height="850" 
+        Width="950"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         ShowInTaskbar="False">
@@ -27,159 +27,187 @@
                    FontWeight="Bold" 
                    Margin="0,0,0,20"/>
 
-        <!-- Campos do Cabeçalho -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="300">
-            <StackPanel>
-                <!-- ID (apenas visualização em modo edição) -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10" x:Name="PnlId" >
-                    <TextBlock Text="ID:" Width="150" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <TextBlock x:Name="TxtIdDisplay" VerticalAlignment="Center" FontSize="14"/>
-                </StackPanel>
+		<!-- Campos do Cabeçalho -->
+		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="300">
+			<StackPanel>
+				<!-- ID (apenas visualização em modo edição) -->
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,15" x:Name="PnlId" Visibility="Collapsed">
+					<TextBlock Text="ID:" Width="80" VerticalAlignment="Center" FontWeight="Bold"/>
+					<TextBlock x:Name="TxtIdDisplay" VerticalAlignment="Center" FontSize="14"/>
+				</StackPanel>
 
-                <!-- Order Number -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Order Number:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <TextBox Grid.Column="1" x:Name="TxtOrderNumber" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                </Grid>
+				<!-- Type/Status -->
+				<Grid Margin="0,0,0,15">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-                <!-- Status -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Status:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <ComboBox Grid.Column="1" x:Name="CmbStatus" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                </Grid>
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Type:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<ComboBox x:Name="CmbType" Padding="5" FontSize="14" SelectionChanged="CmbType_SelectionChanged"/>
+					</StackPanel>
 
-                <!-- Type -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Type:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <ComboBox Grid.Column="1" x:Name="CmbType" VerticalAlignment="Center" Padding="5" FontSize="14" SelectionChanged="CmbType_SelectionChanged"/>
-                </Grid>
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Status:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<ComboBox x:Name="CmbStatus" Padding="5" FontSize="14" SelectionChanged="CmbStatus_SelectionChanged"/>
+					</StackPanel>
+					
+					<!-- Entrance Order Number (Only for Exit orders) -->
+					<StackPanel Grid.Column="5" Margin="0,0,0,15" x:Name="PnlEntranceOrderNumber" Visibility="Collapsed">
+						<TextBlock Text="Entrance Order #:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<ComboBox x:Name="CmbEntranceOrder" Padding="5" FontSize="14" DisplayMemberPath="Id" SelectedValuePath="Id"/>
+					</StackPanel>
+					
+				</Grid>							
 
-                <!-- Product -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Product:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <ComboBox Grid.Column="1" x:Name="CmbProduct" VerticalAlignment="Center" Padding="5" FontSize="14" DisplayMemberPath="Name" SelectedValuePath="Id"/>
-                </Grid>
+				<!-- Simulator Configuration -->
+				<TextBlock Text="Simulator Configuration" FontSize="14" FontWeight="Bold" Margin="0,5,0,10"/>
 
-                <!-- Weighing Scale ID -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Weighing Scale ID:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <TextBox Grid.Column="1" x:Name="TxtWeighingScaleId" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                </Grid>
+				<!-- Lower/Upper Limit Weight -->
+				<Grid Margin="0,0,0,15">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-                <!-- Execution Date -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Execution Date:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <DatePicker Grid.Column="1" x:Name="DtpExecutionDate" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                </Grid>
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Lower Limit Weight:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<TextBox x:Name="TxtLowerLimitWeight" Padding="5" FontSize="14"/>
+					</StackPanel>
 
-                <!-- Expiration Date -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Expiration Date:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <DatePicker Grid.Column="1" x:Name="DtpExpirationDate" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                </Grid>
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Upper Limit Weight:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<TextBox x:Name="TxtUpperLimitWeight" Padding="5" FontSize="14"/>
+					</StackPanel>
+				</Grid>
 
-                <!-- Facturing Date -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Facturing Date:*" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <DatePicker Grid.Column="1" x:Name="DtpFacturingDate" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                </Grid>
+				<!-- Delay/Generate Quantity -->
+				<Grid Margin="0,0,0,15">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-                <!-- Campos específicos para Entrance Type -->
-                <StackPanel x:Name="PnlEntranceFields" >
-                    <!-- Shift -->
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Shift:" VerticalAlignment="Center" FontWeight="Bold"/>
-                        <TextBox Grid.Column="1" x:Name="TxtShift" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                    </Grid>
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Delay (seconds):" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<TextBox x:Name="TxtDelayGenerator" Padding="5" FontSize="14"/>
+					</StackPanel>
 
-                    <!-- Batch -->
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Batch:" VerticalAlignment="Center" FontWeight="Bold"/>
-                        <TextBox Grid.Column="1" x:Name="TxtBatch" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                    </Grid>
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Generate Quantity:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<TextBox x:Name="TxtGenerateQuantity" Padding="5" FontSize="14"/>
+					</StackPanel>
+				</Grid>
 
-                    <!-- Hammer -->
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Hammer:" VerticalAlignment="Center" FontWeight="Bold"/>
-                        <TextBox Grid.Column="1" x:Name="TxtHammer" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                    </Grid>
+				<!-- Production Order Configuration -->
+				<TextBlock Text="Production Order Configuration" FontSize="14" FontWeight="Bold" Margin="0,5,0,10"/>				
 
-                    <!-- Description -->
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="Description:" VerticalAlignment="Center" FontWeight="Bold"/>
-                        <TextBox Grid.Column="1" x:Name="TxtDescription" VerticalAlignment="Center" Padding="5" FontSize="14" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
-                    </Grid>
-                </StackPanel>
+				<!-- Product/Weighing Scale ID -->
+				<Grid Margin="0,0,0,15">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
 
-                <!-- Quantity Carcasses -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Qty Carcasses:" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <TextBox Grid.Column="1" x:Name="TxtQuantityCarcasses" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                </Grid>
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Product:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<ComboBox x:Name="CmbProduct" Padding="5" FontSize="14" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+					</StackPanel>
 
-                <!-- Total Weighing -->
-                <Grid Margin="0,0,0,10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Total Weighing:" VerticalAlignment="Center" FontWeight="Bold"/>
-                    <TextBox Grid.Column="1" x:Name="TxtTotalWeighing" VerticalAlignment="Center" Padding="5" FontSize="14"/>
-                </Grid>
-            </StackPanel>
-        </ScrollViewer>
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Weighing Scale ID:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<ComboBox x:Name="CmbWeighingScale" Padding="5" FontSize="14" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+					</StackPanel>
+				</Grid>
+
+				<!-- Execution/Expiration/Facturing Dates -->
+				<Grid Margin="0,0,0,15">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Execution Date:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<DatePicker x:Name="DtpExecutionDate" Padding="5" FontSize="14"/>
+					</StackPanel>
+
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Expiration Date:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<DatePicker x:Name="DtpExpirationDate" Padding="5" FontSize="14"/>
+					</StackPanel>
+
+					<StackPanel Grid.Column="4">
+						<TextBlock Text="Facturing Date:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<DatePicker x:Name="DtpFacturingDate" Padding="5" FontSize="14"/>
+					</StackPanel>
+				</Grid>
+
+				<!-- Campos específicos para Entrance Type -->
+				<StackPanel x:Name="PnlEntranceFields">
+					<!-- Shift/Batch/Hammer -->
+					<Grid Margin="0,0,0,15">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="10"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="10"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="Shift:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+							<TextBox x:Name="TxtShift" Padding="5" FontSize="14"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="2">
+							<TextBlock Text="Batch:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+							<TextBox x:Name="TxtBatch" Padding="5" FontSize="14"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="4">
+							<TextBlock Text="Hammer:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+							<TextBox x:Name="TxtHammer" Padding="5" FontSize="14"/>
+						</StackPanel>
+					</Grid>
+
+					<!-- Description (Full Width) -->
+					<StackPanel Margin="0,0,0,15">
+						<TextBlock Text="Description:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<TextBox x:Name="TxtDescription" Padding="5" FontSize="14" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+					</StackPanel>
+				</StackPanel>
+
+				<!-- Quantity Carcasses/Total Weighing -->
+				<Grid Margin="0,0,0,15">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="10"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<StackPanel Grid.Column="0">
+						<TextBlock Text="Qty Carcasses:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<TextBox x:Name="TxtQuantityCarcasses" IsEnabled="false" Padding="5" FontSize="14"/>
+					</StackPanel>
+
+					<StackPanel Grid.Column="2">
+						<TextBlock Text="Total Weighing:" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+						<TextBox x:Name="TxtTotalWeighing" IsEnabled="false" Padding="5" FontSize="14"/>
+					</StackPanel>
+				</Grid>
+			</StackPanel>
+		</ScrollViewer>
 
         <!-- Seção de Itens (ProductionOrderItemModel) -->
         <Grid Grid.Row="2" Margin="0,20,0,0" x:Name="PnlItems" >
@@ -272,6 +300,34 @@
                        TextWrapping="Wrap"
                        Visibility="Collapsed"
                        Margin="0,10,0,10"/>
+
+            <!-- Simulator Controls -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <CheckBox x:Name="ChkAutoRefresh" 
+                          Content="Auto-refresh (updates every 2s when executing)" 
+                          VerticalAlignment="Center" 
+                          Margin="0,0,20,0"
+                          FontSize="14"/>
+                <Button x:Name="BtnClearSimulation" 
+                        Content="Clear Simulation" 
+                        Width="150" 
+                        Height="30"
+                        Click="BtnClearSimulation_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#9C27B0"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#7B1FA2"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
 
             <!-- Botões de Ação -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
