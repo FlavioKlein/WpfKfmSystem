@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using WpfPorkProcessSystem.Services;
+using WpfPorkProcessSystem.Windows;
 
 namespace WpfPorkProcessSystem
 {
@@ -63,7 +64,12 @@ namespace WpfPorkProcessSystem
         private void MenuProductionOrder_Click(object sender, RoutedEventArgs e)
         {
             UpdateStatus("Production Order selected");
-            MessageBox.Show("Production Order Form will be here", "Production Order", MessageBoxButton.OK, MessageBoxImage.Information);
+            var window = new ProductionOrderListWindow
+            {
+                Owner = this
+            };
+            window.ShowDialog();
+            UpdateStatus("Ready");
         }
 
         private void MenuRepChambers_Click(object sender, RoutedEventArgs e)

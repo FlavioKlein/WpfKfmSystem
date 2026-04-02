@@ -1,0 +1,323 @@
+<local:ProductionOrderFormWindowBase x:Class="WpfPorkProcessSystem.Windows.ProductionOrderFormWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfPorkProcessSystem.Windows.Base"
+        mc:Ignorable="d"
+        Title="Production Order Form" 
+        Height="750" 
+        Width="900"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Título -->
+        <TextBlock Grid.Row="0" 
+                   x:Name="TxtTitle"
+                   Text="New Production Order" 
+                   FontSize="20" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,20"/>
+
+        <!-- Campos do Cabeçalho -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="300">
+            <StackPanel>
+                <!-- ID (apenas visualização em modo edição) -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10" x:Name="PnlId" >
+                    <TextBlock Text="ID:" Width="150" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBlock x:Name="TxtIdDisplay" VerticalAlignment="Center" FontSize="14"/>
+                </StackPanel>
+
+                <!-- Order Number -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Order Number:*" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBox Grid.Column="1" x:Name="TxtOrderNumber" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                </Grid>
+
+                <!-- Status -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Status:*" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <ComboBox Grid.Column="1" x:Name="CmbStatus" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                </Grid>
+
+                <!-- Type -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Type:*" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <ComboBox Grid.Column="1" x:Name="CmbType" VerticalAlignment="Center" Padding="5" FontSize="14" SelectionChanged="CmbType_SelectionChanged"/>
+                </Grid>
+
+                <!-- Product -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Product:*" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <ComboBox Grid.Column="1" x:Name="CmbProduct" VerticalAlignment="Center" Padding="5" FontSize="14" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                </Grid>
+
+                <!-- Weighing Scale ID -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Weighing Scale ID:*" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBox Grid.Column="1" x:Name="TxtWeighingScaleId" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                </Grid>
+
+                <!-- Execution Date -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Execution Date:*" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <DatePicker Grid.Column="1" x:Name="DtpExecutionDate" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                </Grid>
+
+                <!-- Expiration Date -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Expiration Date:*" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <DatePicker Grid.Column="1" x:Name="DtpExpirationDate" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                </Grid>
+
+                <!-- Facturing Date -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Facturing Date:*" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <DatePicker Grid.Column="1" x:Name="DtpFacturingDate" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                </Grid>
+
+                <!-- Campos específicos para Entrance Type -->
+                <StackPanel x:Name="PnlEntranceFields" >
+                    <!-- Shift -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Shift:" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <TextBox Grid.Column="1" x:Name="TxtShift" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                    </Grid>
+
+                    <!-- Batch -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Batch:" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <TextBox Grid.Column="1" x:Name="TxtBatch" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                    </Grid>
+
+                    <!-- Hammer -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Hammer:" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <TextBox Grid.Column="1" x:Name="TxtHammer" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                    </Grid>
+
+                    <!-- Description -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Description:" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <TextBox Grid.Column="1" x:Name="TxtDescription" VerticalAlignment="Center" Padding="5" FontSize="14" Height="60" TextWrapping="Wrap" AcceptsReturn="True"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Quantity Carcasses -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Qty Carcasses:" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBox Grid.Column="1" x:Name="TxtQuantityCarcasses" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                </Grid>
+
+                <!-- Total Weighing -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Total Weighing:" VerticalAlignment="Center" FontWeight="Bold"/>
+                    <TextBox Grid.Column="1" x:Name="TxtTotalWeighing" VerticalAlignment="Center" Padding="5" FontSize="14"/>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Seção de Itens (ProductionOrderItemModel) -->
+        <Grid Grid.Row="2" Margin="0,20,0,0" x:Name="PnlItems" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Título dos Itens -->
+            <TextBlock Grid.Row="0" x:Name="TxtItemsTitle" Text="Order Items (Chamber Distribution/Sequence)" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+            <!-- Botões de gerenciamento de itens -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                <Button x:Name="BtnAddItem" Content="Add Item" Width="100" Height="30" Margin="0,0,10,0" Click="BtnAddItem_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#2196F3"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#0b7dda"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button x:Name="BtnEditItem" Content="Edit Item" Width="100" Height="30" Margin="0,0,10,0" Click="BtnEditItem_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#FF9800"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#e68900"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button x:Name="BtnRemoveItem" Content="Remove Item" Width="100" Height="30" Click="BtnRemoveItem_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#f44336"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#da190b"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <!-- DataGrid dos Itens -->
+            <Border Grid.Row="2" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="3">
+                <DataGrid x:Name="DgItems" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          GridLinesVisibility="Horizontal"
+                          HeadersVisibility="Column"
+                          AlternatingRowBackground="#F5F5F5">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Sequential" Binding="{Binding Sequential}" Width="100"/>
+                        <DataGridTextColumn Header="Spray Chamber ID" Binding="{Binding SprayChamberId}" Width="140"/>
+                        <DataGridTextColumn Header="Chamber Capacity" Binding="{Binding SprayChamberCapacity}" Width="140"/>
+                        <DataGridTextColumn Header="Initial Stock" Binding="{Binding SprayChamberInitialStock}" Width="120"/>
+                        <DataGridTextColumn Header="Current Stock" Binding="{Binding SprayChamberStock}" Width="110"/>
+                        <DataGridTextColumn Header="Accept Classifications" Binding="{Binding AcceptClassifications}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+
+        <!-- Área de validação e botões -->
+        <StackPanel Grid.Row="3">
+            <!-- Mensagem de Validação -->
+            <TextBlock x:Name="TxtValidation" 
+                       Foreground="Red" 
+                       TextWrapping="Wrap"
+                       Visibility="Collapsed"
+                       Margin="0,10,0,10"/>
+
+            <!-- Botões de Ação -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button x:Name="BtnSave" 
+                        Content="Save" 
+                        Width="100" 
+                        Height="35"
+                        Margin="0,0,10,0"
+                        Click="BtnSave_Click"
+                        IsDefault="True">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#4CAF50"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#45a049"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button x:Name="BtnCancel" 
+                        Content="Cancel" 
+                        Width="100" 
+                        Height="35"
+                        Click="BtnCancel_Click"
+                        IsCancel="True">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#f44336"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#da190b"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</local:ProductionOrderFormWindowBase>

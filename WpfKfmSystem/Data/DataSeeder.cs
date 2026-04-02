@@ -56,7 +56,7 @@ public static class DataSeeder
 
         db.Add<ProductionOrderModel>(order);
 
-        //Order 2 = Leaving
+        //Order 2 = Exit
         order = new ProductionOrderModel();
         order.Id = 2;
         order.Status = ProductionOrderStatusType.Inactive;
@@ -82,8 +82,9 @@ public static class DataSeeder
     private static void SeedProductionOrderItems(InMemoryDatabase db, ProductionOrderModel order)
     {
         var listChamber = db.GetCollection<SprayChamberModel>().OrderBy(c => c.Id);
-        
+
         order.Items = [];
+        order.Notes = []; // Initialize Notes list ONCE, before the loop
 
         foreach (var chamber in listChamber)
         {
@@ -93,6 +94,9 @@ public static class DataSeeder
             item.Sequential = item.Id; // In this case will be the same as Id, but in a real scenario, it could be different
             item.ProductionOrderId = order.Id;
             item.SprayChamberId = chamber.Id;
+            item.SprayChamberCapacity = chamber.Capacity;
+            item.SprayChamberInitialStock = 0;
+            item.SprayChamberStock = 0;
             item.AcceptClassificationIds = GenerateAcceptClass(db);
             item.AcceptClassifications = string.Join(", ", item.AcceptClassificationIds.Select(id => db.GetById<ClassificationWeighingModel>(id)?.Name ?? "Unknown"));
 
@@ -106,8 +110,6 @@ public static class DataSeeder
         ProductionOrderItemModel item, SprayChamberModel chamber)
     {
         _ = db.GetCollection<ProductionNotesModel>();
-
-        order.Notes = [];
 
         var listClass = db.GetCollection<ClassificationWeighingModel>().OrderBy(c => c.Id);
         var roundQuantity = new Random().Next(1, chamber.Capacity);
@@ -159,36 +161,65 @@ public static class DataSeeder
 
         order.Notes = [];
 
-        foreach (var entranceNote in entranceOrder.Notes)
+        // Start with zero values for exit order (will be decremented as notes are processed)
+        order.QuantityCarcasses = 0;
+        order.TotalWeighing = 0;
+        order.Items = [];
+
+        // Create NEW copies of items from entrance order (deep copy)
+        foreach (var entranceItem in entranceOrder.Items)
         {
-            // Create a production note for this item
-            var exitNote = new ProductionNotesModel
+            var exitItem = new ProductionOrderItemModel
             {
-                Id = entranceNote.Id,
+                Id = entranceItem.Id,
+                Sequential = entranceItem.Sequential,
                 ProductionOrderId = order.Id,
-                ProductId = order.ProductId,
-                Product = order.Product,
-                ExecutionDate = order.ExecutionDate,
-                FacturingDate = order.FacturingDate,
-                ExpirationDate = order.ExpirationDate,
-                WeighingScaleId = order.WeighingScaleId,
-                Shift = order.Shift,
-                Batch = order.Batch,
-                Hammer = order.Hammer,
-                SprayChamberId = entranceNote.SprayChamberId,
-                ClassificationId = entranceNote.ClassificationId,
-                Weight = entranceNote.Weight
+                SprayChamberId = entranceItem.SprayChamberId,
+                SprayChamberCapacity = entranceItem.SprayChamberCapacity,
+                SprayChamberInitialStock = entranceItem.SprayChamberStock, // Initial stock for exit = final stock from entrance
+                SprayChamberStock = 0, // Will start at 0 and remain 0 for exit orders
+                AcceptClassificationIds = entranceItem.AcceptClassificationIds,
+                AcceptClassifications = entranceItem.AcceptClassifications
             };
 
-            var chamber = db.GetById<SprayChamberModel>(exitNote.SprayChamberId);
-            if (chamber != null)
-            {
-                chamber.Stock--;
-            }
-            order.QuantityCarcasses++;
-            order.TotalWeighing += exitNote.Weight;
+            order.Items.Add(exitItem);
 
-            order.Notes.Add(exitNote);
+            var listNotesByChamber = entranceOrder.Notes.Where(n => n.SprayChamberId == exitItem.SprayChamberId).ToList();
+
+            foreach (var entranceNote in listNotesByChamber)
+            {
+                // Create a production note for this exit item
+                var exitNote = new ProductionNotesModel
+                {
+                    Id = entranceNote.Id,
+                    ProductionOrderId = order.Id,
+                    ProductId = order.ProductId,
+                    Product = order.Product,
+                    ExecutionDate = order.ExecutionDate,
+                    FacturingDate = order.FacturingDate,
+                    ExpirationDate = order.ExpirationDate,
+                    WeighingScaleId = order.WeighingScaleId,
+                    Shift = order.Shift,
+                    Batch = order.Batch,
+                    Hammer = order.Hammer,
+                    SprayChamberId = entranceNote.SprayChamberId,
+                    ClassificationId = entranceNote.ClassificationId,
+                    Weight = entranceNote.Weight
+                };
+
+                // Decrement chamber stock
+                var chamber = db.GetById<SprayChamberModel>(exitNote.SprayChamberId);
+                if (chamber != null)
+                {
+                    chamber.Stock--;
+                }
+
+                // Increment counters for exit order (counting what's leaving)
+                order.QuantityCarcasses++;
+                order.TotalWeighing += exitNote.Weight;
+
+                order.Notes.Add(exitNote);
+            }
         }
     }
 

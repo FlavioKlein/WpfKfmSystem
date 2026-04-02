@@ -4,8 +4,9 @@ namespace WpfPorkProcessSystem.Models;
 /// PO Production Order Item model.
 /// It's configure how distribute the carcasses and weighing of a production order 
 /// in the different steps of the process, like classification, spray chamber, etc.
-/// Only entrance type orders will use this model, 
-/// because the leave type orders only need to register the total weight of the carcasses.
+/// Used by both entrance and exit type orders:
+/// - Entrance: Defines distribution of carcasses into chambers
+/// - Exit: Defines sequence for removing carcasses from chambers
 /// </summary>
 public class ProductionOrderItemModel : BaseModel
 {
@@ -30,6 +31,11 @@ public class ProductionOrderItemModel : BaseModel
     /// Registry historical chamber stock of carcasses.
     /// </summary>
     public int SprayChamberStock { get; set; }
+
+    /// <summary>
+    /// Registry historical chamber stock of carcasses.
+    /// </summary>
+    public int SprayChamberInitialStock { get; set; }
 
     /// <summary>
     /// String with the classifications names, separated by comma.
