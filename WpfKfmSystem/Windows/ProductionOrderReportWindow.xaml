@@ -1,0 +1,170 @@
+<Window x:Class="WpfPorkProcessSystem.Windows.ProductionOrderReportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Production Order Report - Notes by Chamber" Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="15">
+            <TextBlock Text="Production Order Report" 
+                       FontSize="20" 
+                       FontWeight="Bold" 
+                       Foreground="White"/>
+        </Border>
+
+        <!-- Filter Section -->
+        <Border Grid.Row="1" Background="#ECF0F1" Padding="15" Margin="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" 
+                           Text="Production Order:" 
+                           VerticalAlignment="Center" 
+                           Margin="0,0,10,0"
+                           FontWeight="SemiBold"/>
+                
+                <ComboBox Grid.Column="1" 
+                          x:Name="CmbProductionOrder"
+                          VerticalAlignment="Center">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Id}" FontWeight="Bold" Margin="0,0,5,0"/>
+                                <TextBlock Text="-"/>
+                                <TextBlock Text="{Binding Product.Name}" Margin="5,0,5,0"/>
+                                <TextBlock Text="-"/>
+                                <TextBlock Text="{Binding Type}" Margin="5,0,5,0"/>
+                                <TextBlock Text="(" Margin="5,0,0,0"/>
+                                <TextBlock Text="{Binding QuantityCarcasses}"/>
+                                <TextBlock Text=" items)"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Button Grid.Column="2" 
+                        x:Name="BtnLoadReport"
+                        Content="Load Report" 
+                        Click="BtnLoadReport_Click"
+                        Margin="15,0,0,0"
+                        Padding="20,8"
+                        Background="#3498db"
+                        Foreground="White"
+                        FontWeight="SemiBold"
+                        BorderBrush="#2980b9"
+                        Cursor="Hand"/>
+            </Grid>
+        </Border>
+
+        <!-- Order Info Section -->
+        <Border Grid.Row="2" Background="#F8F9FA" Padding="15" Margin="0,1,0,0">
+            <Grid x:Name="GridOrderInfo" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Product:" FontWeight="SemiBold" Margin="0,0,5,0"/>
+                <TextBlock Grid.Column="1" x:Name="TxtProduct" Margin="0,0,15,0"/>
+
+                <TextBlock Grid.Column="2" Text="Type:" FontWeight="SemiBold" Margin="0,0,5,0"/>
+                <TextBlock Grid.Column="3" x:Name="TxtType" Margin="0,0,15,0"/>
+
+                <TextBlock Grid.Column="4" Text="Total Items:" FontWeight="SemiBold" Margin="0,0,5,0"/>
+                <TextBlock Grid.Column="5" x:Name="TxtTotalItems" Margin="0,0,15,0"/>
+
+                <TextBlock Grid.Column="6" Text="Total Weight:" FontWeight="SemiBold" Margin="0,0,5,0"/>
+                <TextBlock Grid.Column="7" x:Name="TxtTotalWeight" Margin="0,0,15,0"/>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid with Grouping -->
+        <Border Grid.Row="3" Margin="10" BorderBrush="#BDC3C7" BorderThickness="1">
+            <DataGrid x:Name="DgNotes" 
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      GridLinesVisibility="Horizontal"
+                      HeadersVisibility="Column"
+                      CanUserSortColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserReorderColumns="False"
+                      AlternatingRowBackground="#F8F9FA"
+                      RowHeight="30">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Note ID" Binding="{Binding Id}" Width="80"/>
+                    <DataGridTextColumn Header="Chamber" Binding="{Binding ChamberName}" Width="200"/>
+                    <DataGridTextColumn Header="Classification" Binding="{Binding ClassificationName}" Width="150"/>
+                    <DataGridTextColumn Header="Weight (kg)" Binding="{Binding Weight}" Width="100"/>
+                    <DataGridTextColumn Header="Execution Date" Binding="{Binding ExecutionDate, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="140"/>
+                    <DataGridTextColumn Header="Expiration Date" Binding="{Binding ExpirationDate, StringFormat='{}{0:dd/MM/yyyy}'}" Width="120"/>
+                    <DataGridTextColumn Header="Shift" Binding="{Binding Shift}" Width="80"/>
+                    <DataGridTextColumn Header="Batch" Binding="{Binding Batch}" Width="100"/>
+                    <DataGridTextColumn Header="Hammer" Binding="{Binding Hammer}" Width="100"/>
+                </DataGrid.Columns>
+                
+                <DataGrid.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Background="#3498db" Margin="-5,0,0,0">
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontWeight="Bold" 
+                                               Foreground="White"
+                                               Padding="10,5"
+                                               FontSize="14"/>
+                                    <TextBlock Text=" - " 
+                                               Foreground="White"
+                                               Padding="0,5"/>
+                                    <TextBlock Text="{Binding ItemCount}" 
+                                               Foreground="White"
+                                               Padding="0,5"/>
+                                    <TextBlock Text=" items" 
+                                               Foreground="White"
+                                               Padding="0,5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
+            </DataGrid>
+        </Border>
+
+        <!-- Close Button -->
+        <Border Grid.Row="4" Background="#ECF0F1" Padding="15">
+            <Button x:Name="BtnClose" 
+                    Content="Close" 
+                    Click="BtnClose_Click"
+                    HorizontalAlignment="Right"
+                    Padding="30,8"
+                    Background="#95a5a6"
+                    Foreground="White"
+                    FontWeight="SemiBold"
+                    BorderBrush="#7f8c8d"
+                    Cursor="Hand"/>
+        </Border>
+    </Grid>
+</Window>

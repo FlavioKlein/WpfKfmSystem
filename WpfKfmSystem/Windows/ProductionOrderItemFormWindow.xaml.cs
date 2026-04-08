@@ -208,15 +208,8 @@ public partial class ProductionOrderItemFormWindow : Window
             {
                 SprayChamberId = chamber?.Id ?? 0,
                 SprayChamberCapacity = chamber?.Capacity ?? 0,
-                
-                // For ENTRANCE orders: Stock starts at current chamber stock
-                // For EXIT orders: Stock starts at 0 (will increment as items are processed)
-                //SprayChamberStock = _orderType == WeighingType.SprayChamberExit ? 0 : (chamber?.Stock ?? 0),
-
-                SprayChamberStock = chamber?.Stock ?? 0,
-                
-                // Initial stock is always the current chamber stock (how many items are available)
                 SprayChamberInitialStock = chamber?.Stock ?? 0,
+                SprayChamberStock = chamber?.Stock ?? 0,
                 AcceptClassificationIds = selectedClassificationIds.ToArray(),
                 AcceptClassifications = GetClassificationNames(selectedClassificationIds)
             };

@@ -100,14 +100,24 @@ namespace WpfPorkProcessSystem
 
         private void MenuRepChambers_Click(object sender, RoutedEventArgs e)
         {
-            UpdateStatus("Spray Chambers Report selected");
-            MessageBox.Show("Spray Chambers Report Form will be here", "Chambers Report", MessageBoxButton.OK, MessageBoxImage.Information);
+            UpdateStatus("Opening Chamber Stock Report...");
+            var window = new ChamberStockReportWindow
+            {
+                Owner = this
+            };
+            window.ShowDialog();
+            UpdateStatus("Ready");
         }
 
         private void MenuRepProduction_Click(object sender, RoutedEventArgs e)
         {
-            UpdateStatus("Production Report selected");
-            MessageBox.Show("Production Report Form will be here", "Production Report", MessageBoxButton.OK, MessageBoxImage.Information);
+            UpdateStatus("Opening Production Order Report...");
+            var window = new ProductionOrderReportWindow
+            {
+                Owner = this
+            };
+            window.ShowDialog();
+            UpdateStatus("Ready");
         }
 
         private void UpdateStatus(string mensagem)
