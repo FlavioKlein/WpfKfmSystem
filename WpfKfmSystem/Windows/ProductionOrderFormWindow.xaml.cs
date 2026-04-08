@@ -25,6 +25,7 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
         _items = new ObservableCollection<ProductionOrderItemModel>();
 
         base.TxtValidation = TxtValidation;
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_NewOrder;
         InitializeComboBoxes();
         DgItems.ItemsSource = _items;
         CmbType.Focus();
@@ -40,6 +41,7 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
         _items = new ObservableCollection<ProductionOrderItemModel>();
 
         base.TxtValidation = TxtValidation;
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_EditOrder;
         InitializeComboBoxes();
         DgItems.ItemsSource = _items;
         LoadData();
@@ -78,7 +80,7 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
 
     protected override void FillForm(ProductionOrderModel model)
     {
-        TxtTitle.Text = "Edit Production Order";
+        TxtTitle.Text = WpfPorkProcessSystem.Resources.Strings.Window_EditOrder;
         PnlId.Visibility = Visibility.Visible;
         TxtIdDisplay.Text = model.Id.ToString();
 

@@ -18,7 +18,7 @@ public class ProductionOrderListWindow : BaseListWindow<ProductionOrderModel, Pr
         // All the UI is created automaticaly by the base class constructor
     }
 
-    protected override string GetTitle() => "Production Orders";
+    protected override string GetTitle() => WpfPorkProcessSystem.Resources.Strings.Window_ProductionOrder;
 
     /// <summary>
     /// Configures DataGrid columns - Only header data

@@ -23,6 +23,9 @@ public partial class ChamberStockReportWindow : Window
         _database = InMemoryDatabase.Instance;
         _stockItems = new List<StockItemReportModel>();
 
+        // Set window title from resources
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_ChamberStockReport;
+
         InitializeData();
     }
 

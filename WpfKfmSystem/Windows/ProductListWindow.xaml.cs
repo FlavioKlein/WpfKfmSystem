@@ -18,7 +18,7 @@ public class ProdutoListagemWindow : BaseListWindow<ProductModel, ProductService
         // All the UI is created automaticaly by the base class constructor
     }
 
-    protected override string GetTitle() => "Products";
+    protected override string GetTitle() => WpfPorkProcessSystem.Resources.Strings.Window_Product;
 
     /// <summary>
     /// Configura as colunas do DataGrid

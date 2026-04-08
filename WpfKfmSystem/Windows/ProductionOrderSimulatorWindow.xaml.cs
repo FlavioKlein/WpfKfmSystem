@@ -23,6 +23,9 @@ public partial class ProductionOrderSimulatorWindow : Window
         _items = new ObservableCollection<ProductionOrderItemModel>();
         DgItems.ItemsSource = _items;
 
+        // Set window title from resources
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_Simulator;
+
         InitializeComboBox();
         InitializeDelayComboBox();
         InitializeAutoRefreshTimer();

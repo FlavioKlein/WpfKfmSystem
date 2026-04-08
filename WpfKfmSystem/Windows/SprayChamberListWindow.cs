@@ -17,7 +17,7 @@ public class SprayChamberListWindow : BaseListWindow<SprayChamberModel, SprayCha
         // All the UI is created automaticaly by the base class constructor
     }
 
-    protected override string GetTitle() => "Spray Chambers";
+    protected override string GetTitle() => WpfPorkProcessSystem.Resources.Strings.Window_SprayChamber;
 
     protected override void DatagridColumnsConfig(DataGrid dataGrid)
     {

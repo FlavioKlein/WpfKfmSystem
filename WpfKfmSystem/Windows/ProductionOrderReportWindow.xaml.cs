@@ -24,6 +24,9 @@ public partial class ProductionOrderReportWindow : Window
         _classificationService = new ClassificationWeighingService();
         _database = InMemoryDatabase.Instance;
 
+        // Set window title from resources
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_ProductionOrderReport;
+
         InitializeData();
     }
 

@@ -15,6 +15,7 @@ public partial class ClassificationWeighingFormWindow : ClassificationWeighingFo
         InitializeComponent();
         _productService = new ProductService();
         base.TxtValidation = TxtValidation;
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_NewClassification;
         LoadProducts();
         TxtName.Focus();
     }
@@ -24,13 +25,14 @@ public partial class ClassificationWeighingFormWindow : ClassificationWeighingFo
         InitializeComponent();
         _productService = new ProductService();
         base.TxtValidation = TxtValidation;
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_EditClassification;
         LoadProducts();
         LoadData(); 
     }
 
     protected override void FillForm(ClassificationWeighingModel model)
     {
-        TxtTitle.Text = "Edit Classification";
+        TxtTitle.Text = WpfPorkProcessSystem.Resources.Strings.Window_EditClassification;
         PnlId.Visibility = Visibility.Visible;
         TxtIdDisplay.Text = model.Id.ToString();
         TxtName.Text = model.Name;

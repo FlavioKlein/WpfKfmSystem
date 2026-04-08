@@ -10,21 +10,38 @@
     <DockPanel>
         <!-- Menu Principal -->
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Forms">
-                <MenuItem Header="_Product" Click="MenuProduct_Click"/>
-                <MenuItem Header="_Classification Weighing" Click="MenuClassification_Click"/>
+            <MenuItem Header="_Forms" x:Name="MenuForms">
+                <MenuItem Header="_Product" x:Name="MenuProduct" Click="MenuProduct_Click"/>
+                <MenuItem Header="_Classification Weighing" x:Name="MenuClassification" Click="MenuClassification_Click"/>
                 <Separator/>
-                <MenuItem Header="_Spray Chambers" Click="MenuChambers_Click"/>
-                <MenuItem Header="_Weighing Scales" Click="MenuWeighingScales_Click"/>
+                <MenuItem Header="_Spray Chambers" x:Name="MenuSprayChambers" Click="MenuChambers_Click"/>
+                <MenuItem Header="_Weighing Scales" x:Name="MenuWeighingScales" Click="MenuWeighingScales_Click"/>
             </MenuItem>
-            <MenuItem Header="_Operation">
-                <MenuItem Header="_Production Order" Click="MenuProductionOrder_Click"/>
+            <MenuItem Header="_Operation" x:Name="MenuOperation">
+                <MenuItem Header="_Production Order" x:Name="MenuProductionOrder" Click="MenuProductionOrder_Click"/>
                 <Separator/>
-                <MenuItem Header="_Simulator" Click="MenuSimulator_Click"/>
+                <MenuItem Header="_Simulator" x:Name="MenuSimulator" Click="MenuSimulator_Click"/>
             </MenuItem>
-            <MenuItem Header="_Reports">
-                <MenuItem Header="Chamber Status" Click="MenuRepChambers_Click"/>
-                <MenuItem Header="Production" Click="MenuRepProduction_Click"/>
+            <MenuItem Header="_Reports" x:Name="MenuReports">
+                <MenuItem Header="Chamber Status" x:Name="MenuChamberStatus" Click="MenuRepChambers_Click"/>
+                <MenuItem Header="Production" x:Name="MenuProduction" Click="MenuRepProduction_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Language" x:Name="MenuLanguage">
+                <MenuItem Header="Português (BR)" Click="MenuLanguagePtBR_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="🇧🇷" FontSize="16"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="English" Click="MenuLanguageEn_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="🇺🇸" FontSize="16"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Español" Click="MenuLanguageEs_Click">
+                    <MenuItem.Icon>
+                        <TextBlock Text="🇪🇸" FontSize="16"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
 
@@ -40,31 +57,31 @@
             <ContentControl x:Name="ContentArea">
                 <Border Background="#F0F0F0" CornerRadius="5" Margin="20">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="Carcass and Stock Chamber Management" 
+                        <TextBlock x:Name="TxtSubtitle"
                                    FontSize="30" 
                                    FontWeight="Bold" 
                                    Foreground="#333333"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,20"/>
-                        <TextBlock Text="This is a simple C# WPF project test." 
+                        <TextBlock x:Name="TxtDescription1"
                                    FontSize="20" 
                                    FontWeight="Light" 
                                    Foreground="#333333"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,20"/>
-                        <TextBlock Text="It's a POC for a complete web application" 
+                        <TextBlock x:Name="TxtDescription2"
                                    FontSize="20" 
                                    FontWeight="Light" 
                                    Foreground="#333333"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,20"/>
-                        <TextBlock Text="The goal is test a system to control kill floor management industry," 
+                        <TextBlock x:Name="TxtDescription3"
                                    FontSize="20" 
                                    FontWeight="Light" 
                                    Foreground="#333333"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,20"/>
-                        <TextBlock Text="By pork and beef." 
+                        <TextBlock x:Name="TxtDescription4"
                                    FontSize="20" 
                                    FontWeight="Light" 
                                    Foreground="#333333"

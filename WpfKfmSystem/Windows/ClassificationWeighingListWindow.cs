@@ -14,7 +14,7 @@ public class ClassificationWeighingListWindow : BaseListWindow<ClassificationWei
         Width = 950;
     }
 
-    protected override string GetTitle() => "Weighing Classification";
+    protected override string GetTitle() => WpfPorkProcessSystem.Resources.Strings.Window_Classification;
 
     protected override void DatagridColumnsConfig(DataGrid dataGrid)
     {

@@ -17,7 +17,7 @@ public class WeighingScaleListWindow : BaseListWindow<WeighingScaleModel, Weighi
         // All the UI is created automatically by the base class constructor
     }
 
-    protected override string GetTitle() => "Weighing Scales";
+    protected override string GetTitle() => WpfPorkProcessSystem.Resources.Strings.Window_WeighingScale;
 
     protected override void DatagridColumnsConfig(DataGrid dataGrid)
     {

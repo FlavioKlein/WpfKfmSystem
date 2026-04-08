@@ -11,6 +11,7 @@ public partial class SprayChamberFormWindow : SprayChamberFormWindowBase
     {
         InitializeComponent();
         base.TxtValidation = TxtValidation;
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_NewChamber;
         TxtName.Focus();
     }
 
@@ -18,12 +19,13 @@ public partial class SprayChamberFormWindow : SprayChamberFormWindowBase
     {
         InitializeComponent();
         base.TxtValidation = TxtValidation;
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_EditChamber;
         LoadData();
     }
 
     protected override void FillForm(SprayChamberModel model)
     {
-        TxtTitle.Text = "Edit Spray Chamber";
+        TxtTitle.Text = WpfPorkProcessSystem.Resources.Strings.Window_EditChamber;
         PnlId.Visibility = Visibility.Visible;
         TxtIdDisplay.Text = model.Id.ToString();
         TxtName.Text = model.Name;

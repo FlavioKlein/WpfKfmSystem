@@ -11,6 +11,7 @@ public partial class ProductFormWindow : ProductFormWindowBase
         InitializeComponent();
         // Conecta o TextBlock de validação da classe base
         base.TxtValidation = TxtValidation;
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_NewProduct;
         TxtName.Focus();
     }
 
@@ -19,13 +20,14 @@ public partial class ProductFormWindow : ProductFormWindowBase
         InitializeComponent();
         // Conecta o TextBlock de validação da classe base
         base.TxtValidation = TxtValidation;
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_EditProduct;
         LoadData(); // Chama o método da classe base
     }
 
     // Implementa o método abstrato para preencher o formulário
     protected override void FillForm(ProductModel model)
     {
-        TxtTitle.Text = "Edit Product";
+        TxtTitle.Text = WpfPorkProcessSystem.Resources.Strings.Window_EditProduct;
         PnlId.Visibility = Visibility.Visible;
         TxtIdDisplay.Text = model.Id.ToString();
         TxtName.Text = model.Name;

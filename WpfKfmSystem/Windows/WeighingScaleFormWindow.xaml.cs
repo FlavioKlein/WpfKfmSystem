@@ -12,6 +12,7 @@ public partial class WeighingScaleFormWindow : WeighingScaleFormWindowBase
     {
         InitializeComponent();
         base.TxtValidation = TxtValidation;
+        Title = "New Weighing Scale"; // Temporário - adicionar ao resources depois
         InitializeComboBox();
         TxtName.Focus();
     }
@@ -20,6 +21,7 @@ public partial class WeighingScaleFormWindow : WeighingScaleFormWindowBase
     {
         InitializeComponent();
         base.TxtValidation = TxtValidation;
+        Title = "Edit Weighing Scale"; // Temporário - adicionar ao resources depois
         InitializeComboBox();
         LoadData();
     }
@@ -32,7 +34,7 @@ public partial class WeighingScaleFormWindow : WeighingScaleFormWindowBase
 
     protected override void FillForm(WeighingScaleModel model)
     {
-        TxtTitle.Text = "Edit Weighing Scale";
+        TxtTitle.Text = "Edit Weighing Scale"; // Temporário - adicionar ao resources depois
         PnlId.Visibility = Visibility.Visible;
         TxtIdDisplay.Text = model.Id.ToString();
         TxtName.Text = model.Name;

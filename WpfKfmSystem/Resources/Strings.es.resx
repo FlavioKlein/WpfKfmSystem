@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- Application -->
+  <data name="App_Title" xml:space="preserve">
+    <value>KFM - Gestión de Matadero</value>
+  </data>
+  <data name="App_Subtitle" xml:space="preserve">
+    <value>Gestión de Canales y Stock de Cámaras</value>
+  </data>
+  <data name="App_Description1" xml:space="preserve">
+    <value>Este es un proyecto de prueba simple en C# WPF.</value>
+  </data>
+  <data name="App_Description2" xml:space="preserve">
+    <value>Es una POC para una aplicación web completa</value>
+  </data>
+  <data name="App_Description3" xml:space="preserve">
+    <value>El objetivo es probar un sistema de control de gestión de matadero industrial,</value>
+  </data>
+  <data name="App_Description4" xml:space="preserve">
+    <value>Para porcino y bovino.</value>
+  </data>
+  
+  <!-- Menus -->
+  <data name="Menu_Forms" xml:space="preserve">
+    <value>Formularios</value>
+  </data>
+  <data name="Menu_Operation" xml:space="preserve">
+    <value>Operación</value>
+  </data>
+  <data name="Menu_Reports" xml:space="preserve">
+    <value>Informes</value>
+  </data>
+  <data name="Menu_Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="Menu_Product" xml:space="preserve">
+    <value>Producto</value>
+  </data>
+  <data name="Menu_ClassificationWeighing" xml:space="preserve">
+    <value>Clasificación de Pesaje</value>
+  </data>
+  <data name="Menu_SprayChambers" xml:space="preserve">
+    <value>Cámaras de Aspersión</value>
+  </data>
+  <data name="Menu_WeighingScales" xml:space="preserve">
+    <value>Básculas</value>
+  </data>
+  <data name="Menu_ProductionOrder" xml:space="preserve">
+    <value>Orden de Producción</value>
+  </data>
+  <data name="Menu_Simulator" xml:space="preserve">
+    <value>Simulador</value>
+  </data>
+  <data name="Menu_ChamberStatus" xml:space="preserve">
+    <value>Estado de Cámara</value>
+  </data>
+  <data name="Menu_Production" xml:space="preserve">
+    <value>Producción</value>
+  </data>
+  
+  <!-- Common Buttons -->
+  <data name="Button_Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="Button_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Button_Close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="Button_New" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
+  <data name="Button_Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="Button_Delete" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="Button_Load" xml:space="preserve">
+    <value>Cargar</value>
+  </data>
+  <data name="Button_Start" xml:space="preserve">
+    <value>Iniciar</value>
+  </data>
+  <data name="Button_Pause" xml:space="preserve">
+    <value>Pausar</value>
+  </data>
+  <data name="Button_Resume" xml:space="preserve">
+    <value>Reanudar</value>
+  </data>
+  <data name="Button_Stop" xml:space="preserve">
+    <value>Detener</value>
+  </data>
+  <data name="Button_Clear" xml:space="preserve">
+    <value>Limpiar</value>
+  </data>
+  <data name="Button_LoadReport" xml:space="preserve">
+    <value>Cargar Informe</value>
+  </data>
+  <data name="Button_LoadOrder" xml:space="preserve">
+    <value>Cargar Orden</value>
+  </data>
+  <data name="Button_SaveConfig" xml:space="preserve">
+    <value>Guardar Configuración</value>
+  </data>
+  <data name="Button_ClearSimulation" xml:space="preserve">
+    <value>Limpiar Simulación</value>
+  </data>
+  
+  <!-- Common Labels -->
+  <data name="Label_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Label_Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Label_Description" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Label_Product" xml:space="preserve">
+    <value>Producto</value>
+  </data>
+  <data name="Label_Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="Label_Status" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="Label_Capacity" xml:space="preserve">
+    <value>Capacidad</value>
+  </data>
+  <data name="Label_Stock" xml:space="preserve">
+    <value>Stock</value>
+  </data>
+  <data name="Label_Weight" xml:space="preserve">
+    <value>Peso</value>
+  </data>
+  <data name="Label_Classification" xml:space="preserve">
+    <value>Clasificación</value>
+  </data>
+  <data name="Label_LowerLimit" xml:space="preserve">
+    <value>Límite Inferior</value>
+  </data>
+  <data name="Label_UpperLimit" xml:space="preserve">
+    <value>Límite Superior</value>
+  </data>
+  <data name="Label_ExecutionDate" xml:space="preserve">
+    <value>Fecha de Ejecución</value>
+  </data>
+  <data name="Label_ExpirationDate" xml:space="preserve">
+    <value>Fecha de Vencimiento</value>
+  </data>
+  <data name="Label_FacturingDate" xml:space="preserve">
+    <value>Fecha de Facturación</value>
+  </data>
+  <data name="Label_Shift" xml:space="preserve">
+    <value>Turno</value>
+  </data>
+  <data name="Label_Batch" xml:space="preserve">
+    <value>Lote</value>
+  </data>
+  <data name="Label_Hammer" xml:space="preserve">
+    <value>Martillo</value>
+  </data>
+  <data name="Label_SprayChamber" xml:space="preserve">
+    <value>Cámara de Aspersión</value>
+  </data>
+  <data name="Label_WeighingScale" xml:space="preserve">
+    <value>Báscula</value>
+  </data>
+  <data name="Label_ProductionOrder" xml:space="preserve">
+    <value>Orden de Producción</value>
+  </data>
+  <data name="Label_OrderId" xml:space="preserve">
+    <value>ID de Orden</value>
+  </data>
+  <data name="Label_TotalItems" xml:space="preserve">
+    <value>Total de Artículos</value>
+  </data>
+  <data name="Label_TotalWeight" xml:space="preserve">
+    <value>Peso Total</value>
+  </data>
+  <data name="Label_QuantityCarcasses" xml:space="preserve">
+    <value>Cantidad de Canales</value>
+  </data>
+  <data name="Label_GenerateQuantity" xml:space="preserve">
+    <value>Cantidad a Generar</value>
+  </data>
+  <data name="Label_Delay" xml:space="preserve">
+    <value>Retardo</value>
+  </data>
+  <data name="Label_Sequential" xml:space="preserve">
+    <value>Secuencial</value>
+  </data>
+  <data name="Label_Chamber" xml:space="preserve">
+    <value>Cámara</value>
+  </data>
+  <data name="Label_AcceptClassifications" xml:space="preserve">
+    <value>Clasificaciones Aceptadas</value>
+  </data>
+  <data name="Label_NoteId" xml:space="preserve">
+    <value>ID de Nota</value>
+  </data>
+  <data name="Label_EntranceOrder" xml:space="preserve">
+    <value>Orden de Entrada</value>
+  </data>
+  
+  <!-- Window Titles -->
+  <data name="Window_Product" xml:space="preserve">
+    <value>Productos</value>
+  </data>
+  <data name="Window_Classification" xml:space="preserve">
+    <value>Clasificaciones de Pesaje</value>
+  </data>
+  <data name="Window_SprayChamber" xml:space="preserve">
+    <value>Cámaras de Aspersión</value>
+  </data>
+  <data name="Window_WeighingScale" xml:space="preserve">
+    <value>Básculas</value>
+  </data>
+  <data name="Window_ProductionOrder" xml:space="preserve">
+    <value>Órdenes de Producción</value>
+  </data>
+  <data name="Window_Simulator" xml:space="preserve">
+    <value>Simulador de Orden de Producción</value>
+  </data>
+  <data name="Window_ChamberStockReport" xml:space="preserve">
+    <value>Informe de Stock de Cámara - Artículos en Stock</value>
+  </data>
+  <data name="Window_ProductionOrderReport" xml:space="preserve">
+    <value>Informe de Orden de Producción - Notas por Cámara</value>
+  </data>
+  <data name="Window_NewProduct" xml:space="preserve">
+    <value>Nuevo Producto</value>
+  </data>
+  <data name="Window_EditProduct" xml:space="preserve">
+    <value>Editar Producto</value>
+  </data>
+  <data name="Window_NewClassification" xml:space="preserve">
+    <value>Nueva Clasificación</value>
+  </data>
+  <data name="Window_EditClassification" xml:space="preserve">
+    <value>Editar Clasificación</value>
+  </data>
+  <data name="Window_NewChamber" xml:space="preserve">
+    <value>Nueva Cámara</value>
+  </data>
+  <data name="Window_EditChamber" xml:space="preserve">
+    <value>Editar Cámara</value>
+  </data>
+  <data name="Window_NewOrder" xml:space="preserve">
+    <value>Nueva Orden de Producción</value>
+  </data>
+  <data name="Window_EditOrder" xml:space="preserve">
+    <value>Editar Orden de Producción</value>
+  </data>
+  <data name="Window_NewOrderItem" xml:space="preserve">
+    <value>Nuevo Artículo de Orden</value>
+  </data>
+  <data name="Window_EditOrderItem" xml:space="preserve">
+    <value>Editar Artículo de Orden</value>
+  </data>
+  
+  <!-- Status Messages -->
+  <data name="Status_Ready" xml:space="preserve">
+    <value>Listo</value>
+  </data>
+  <data name="Status_Opening" xml:space="preserve">
+    <value>Abriendo...</value>
+  </data>
+  <data name="Status_Loading" xml:space="preserve">
+    <value>Cargando...</value>
+  </data>
+  <data name="Status_Saving" xml:space="preserve">
+    <value>Guardando...</value>
+  </data>
+  
+  <!-- Messages -->
+  <data name="Msg_ConfirmDelete" xml:space="preserve">
+    <value>¿Está seguro de que desea eliminar este registro?</value>
+  </data>
+  <data name="Msg_DeleteSuccess" xml:space="preserve">
+    <value>¡Registro eliminado con éxito!</value>
+  </data>
+  <data name="Msg_SaveSuccess" xml:space="preserve">
+    <value>¡Registro guardado con éxito!</value>
+  </data>
+  <data name="Msg_ConfigSaved" xml:space="preserve">
+    <value>¡Configuración del simulador guardada con éxito!</value>
+  </data>
+  <data name="Msg_SimulationCleared" xml:space="preserve">
+    <value>¡Datos de simulación limpiados con éxito!</value>
+  </data>
+  <data name="Msg_SimulationCompleted" xml:space="preserve">
+    <value>¡Simulación completada! Todos los registros configurados han sido generados.</value>
+  </data>
+  <data name="Msg_SelectRecord" xml:space="preserve">
+    <value>Por favor, seleccione un registro.</value>
+  </data>
+  <data name="Msg_SelectChamber" xml:space="preserve">
+    <value>Por favor, seleccione una cámara de aspersión.</value>
+  </data>
+  <data name="Msg_SelectOrder" xml:space="preserve">
+    <value>Por favor, seleccione una orden de producción.</value>
+  </data>
+  <data name="Msg_NoChambersWithStock" xml:space="preserve">
+    <value>No hay cámaras con stock disponibles.</value>
+  </data>
+  <data name="Msg_NoFinalizedOrders" xml:space="preserve">
+    <value>No hay órdenes de producción finalizadas disponibles.</value>
+  </data>
+  <data name="Msg_ChamberNoStock" xml:space="preserve">
+    <value>La cámara seleccionada no tiene stock.</value>
+  </data>
+  <data name="Msg_NoEntranceOrders" xml:space="preserve">
+    <value>No se encontraron órdenes de entrada para esta cámara.</value>
+  </data>
+  <data name="Msg_OrderNoNotes" xml:space="preserve">
+    <value>Esta orden no tiene notas.</value>
+  </data>
+  <data name="Msg_ConfirmClearSimulation" xml:space="preserve">
+    <value>Esto limpiará todos los datos de simulación (notas) y revertirá los stocks de cámaras a su estado inicial. ¿Continuar?</value>
+  </data>
+  <data name="Msg_LanguageChanged" xml:space="preserve">
+    <value>¡Idioma cambiado! Por favor, reinicie la aplicación para aplicar los cambios.</value>
+  </data>
+  
+  <!-- Validation Messages -->
+  <data name="Validation_RequiredField" xml:space="preserve">
+    <value>Por favor, complete todos los campos obligatorios.</value>
+  </data>
+  <data name="Validation_InvalidNumber" xml:space="preserve">
+    <value>Por favor, introduzca un número válido.</value>
+  </data>
+  <data name="Validation_LowerGreaterUpper" xml:space="preserve">
+    <value>El límite inferior debe ser menor que el límite superior.</value>
+  </data>
+  <data name="Validation_SelectClassification" xml:space="preserve">
+    <value>Por favor, seleccione al menos una clasificación.</value>
+  </data>
+  <data name="Validation_LoadOrderFirst" xml:space="preserve">
+    <value>Por favor, cargue primero una orden de producción.</value>
+  </data>
+  
+  <!-- Dialog Titles -->
+  <data name="Dialog_Confirmation" xml:space="preserve">
+    <value>Confirmación</value>
+  </data>
+  <data name="Dialog_Success" xml:space="preserve">
+    <value>Éxito</value>
+  </data>
+  <data name="Dialog_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Dialog_Warning" xml:space="preserve">
+    <value>Advertencia</value>
+  </data>
+  <data name="Dialog_Information" xml:space="preserve">
+    <value>Información</value>
+  </data>
+  <data name="Dialog_Validation" xml:space="preserve">
+    <value>Validación</value>
+  </data>
+  
+  <!-- Report Headers -->
+  <data name="Report_ChamberStockTitle" xml:space="preserve">
+    <value>Informe de Stock de Cámara</value>
+  </data>
+  <data name="Report_ProductionOrderTitle" xml:space="preserve">
+    <value>Informe de Orden de Producción</value>
+  </data>
+  <data name="Report_Summary" xml:space="preserve">
+    <value>Total de Artículos: {0} | Peso Total: {1} kg | Stock de Cámara: {2}</value>
+  </data>
+  
+  <!-- Column Headers -->
+  <data name="Column_NoteId" xml:space="preserve">
+    <value>ID de Nota</value>
+  </data>
+  <data name="Column_OrderId" xml:space="preserve">
+    <value>ID de Orden</value>
+  </data>
+  <data name="Column_Product" xml:space="preserve">
+    <value>Producto</value>
+  </data>
+  <data name="Column_Classification" xml:space="preserve">
+    <value>Clasificación</value>
+  </data>
+  <data name="Column_Weight" xml:space="preserve">
+    <value>Peso (kg)</value>
+  </data>
+  <data name="Column_ExecutionDate" xml:space="preserve">
+    <value>Fecha de Ejecución</value>
+  </data>
+  <data name="Column_ExpirationDate" xml:space="preserve">
+    <value>Fecha de Vencimiento</value>
+  </data>
+  <data name="Column_Shift" xml:space="preserve">
+    <value>Turno</value>
+  </data>
+  <data name="Column_Batch" xml:space="preserve">
+    <value>Lote</value>
+  </data>
+  <data name="Column_Hammer" xml:space="preserve">
+    <value>Martillo</value>
+  </data>
+  <data name="Column_Chamber" xml:space="preserve">
+    <value>Cámara</value>
+  </data>
+  <data name="Column_Sequential" xml:space="preserve">
+    <value>Secuencial</value>
+  </data>
+  <data name="Column_Capacity" xml:space="preserve">
+    <value>Capacidad</value>
+  </data>
+  <data name="Column_Stock" xml:space="preserve">
+    <value>Stock</value>
+  </data>
+  <data name="Column_AcceptClassifications" xml:space="preserve">
+    <value>Clasificaciones Aceptadas</value>
+  </data>
+</root>

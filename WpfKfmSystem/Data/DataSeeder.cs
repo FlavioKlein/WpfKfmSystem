@@ -56,25 +56,25 @@ public static class DataSeeder
         db.Add<ProductionOrderModel>(order);
 
         //Order 2 = Exit
-        //order = new ProductionOrderModel();
-        //order.Id = 2;
-        //order.Status = ProductionOrderStatusType.Finalized;
-        //order.Type = WeighingType.SprayChamberExit;
-        //order.ProductId = 1;
-        //order.Product = product;        
-        //order.EntranceOrderNumber = 1;
-        //order.WeighingScaleId = 1;
-        //order.ExecutionDate = executionDate.AddDays(1);
-        //order.FacturingDate = order.ExecutionDate;
-        //order.ExpirationDate = order.ExecutionDate.AddDays(15);
-        //order.Shift = "Morning";
-        //order.Batch = "Batch 001";
-        //order.Hammer = "Hammer 001";
-        //order.Description = "Description Order 002";
+        order = new ProductionOrderModel();
+        order.Id = 2;
+        order.Status = ProductionOrderStatusType.Finalized;
+        order.Type = WeighingType.SprayChamberExit;
+        order.ProductId = 1;
+        order.Product = product;
+        order.EntranceOrderNumber = 1;
+        order.WeighingScaleId = 1;
+        order.ExecutionDate = executionDate.AddDays(1);
+        order.FacturingDate = order.ExecutionDate;
+        order.ExpirationDate = order.ExecutionDate.AddDays(15);
+        order.Shift = "Morning";
+        order.Batch = "Batch 001";
+        order.Hammer = "Hammer 001";
+        order.Description = "Description Order 002";
 
-        //SeedExitChamberProductionNotes(db, order, 1);
+        SeedExitChamberProductionNotes(db, order, 1);
 
-        //db.Add<ProductionOrderModel>(order);
+        db.Add<ProductionOrderModel>(order);
         #endregion
     }
 

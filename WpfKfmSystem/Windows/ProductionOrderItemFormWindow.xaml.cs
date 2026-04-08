@@ -28,6 +28,7 @@ public partial class ProductionOrderItemFormWindow : Window
         _editMode = false;
         _allClassifications = new List<ClassificationWeighingModel>();
 
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_NewOrderItem;
         InitializeData();
         UpdateUIForOrderType();
     }
@@ -41,6 +42,7 @@ public partial class ProductionOrderItemFormWindow : Window
         _editMode = true;
         _allClassifications = new List<ClassificationWeighingModel>();
 
+        Title = WpfPorkProcessSystem.Resources.Strings.Window_EditOrderItem;
         InitializeData();
         UpdateUIForOrderType();
         FillForm(item);
@@ -79,8 +81,8 @@ public partial class ProductionOrderItemFormWindow : Window
 
     private void FillForm(ProductionOrderItemModel item)
     {
-        TxtTitle.Text = "Edit Production Order Item";
-        
+        TxtTitle.Text = WpfPorkProcessSystem.Resources.Strings.Window_EditOrderItem;
+
         CmbSprayChamber.SelectedValue = item.SprayChamberId;
         TxtChamberCapacity.Text = item.SprayChamberCapacity.ToString();
         TxtChamberStock.Text = item.SprayChamberStock.ToString();
