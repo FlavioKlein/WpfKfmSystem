@@ -87,6 +87,17 @@ namespace WpfPorkProcessSystem
             UpdateStatus("Ready");
         }
 
+        private void MenuSimulator_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateStatus("Opening Production Order Simulator...");
+            var window = new ProductionOrderSimulatorWindow
+            {
+                Owner = this
+            };
+            window.ShowDialog();
+            UpdateStatus("Ready");
+        }
+
         private void MenuRepChambers_Click(object sender, RoutedEventArgs e)
         {
             UpdateStatus("Spray Chambers Report selected");

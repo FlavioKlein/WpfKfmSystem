@@ -1,4 +1,3 @@
-using System.Timers;
 using WpfPorkProcessSystem.Data;
 using WpfPorkProcessSystem.Enums;
 using WpfPorkProcessSystem.Models;
@@ -12,11 +11,13 @@ namespace WpfPorkProcessSystem.Services;
 public class ProductionOrderSimulatorService : IDisposable
 {
     private readonly InMemoryDatabase _database;
-    private readonly System.Timers.Timer _timer;
+    private readonly Random _random;
+    private CancellationTokenSource? _cancellationTokenSource;
+    private Task? _simulationTask;
     private ProductionOrderModel? _currentOrder;
     private int _generatedCount;
     private bool _isRunning;
-    private readonly Random _random;
+    private ProductionOrderModel? _originOrder;
 
     public event EventHandler<SimulatorEventArgs>? DataGenerated;
     public event EventHandler<SimulatorEventArgs>? SimulatorFinalized;
@@ -28,15 +29,13 @@ public class ProductionOrderSimulatorService : IDisposable
     public ProductionOrderSimulatorService()
     {
         _database = InMemoryDatabase.Instance;
-        _timer = new System.Timers.Timer();
-        _timer.Elapsed += OnTimerElapsed;
         _random = new Random();
     }
 
     /// <summary>
     /// Starts the simulator for a specific production order.
     /// </summary>
-    public void Start(int orderId)
+    public async Task StartAsync(int orderId)
     {
         if (_isRunning)
         {
@@ -44,7 +43,7 @@ public class ProductionOrderSimulatorService : IDisposable
         }
 
         _currentOrder = _database.GetById<ProductionOrderModel>(orderId);
-        
+
         if (_currentOrder == null)
         {
             throw new ArgumentException($"Production order with ID {orderId} not found.");
@@ -55,20 +54,102 @@ public class ProductionOrderSimulatorService : IDisposable
             throw new InvalidOperationException("Production order must be in Executing status to start simulation.");
         }
 
-        if (_currentOrder.DelayGenerator <= 0)
+        if (_currentOrder.DelayGenerator < 0)
         {
-            throw new ArgumentException("Delay generator must be greater than zero.");
+            throw new ArgumentException("Delay generator must be non-negative.");
         }
 
-        if (_currentOrder.GenerateQuantity <= 0)
+        if (_currentOrder.Type == WeighingType.SprayChamberEntrance)
         {
-            throw new ArgumentException("Generate quantity must be greater than zero.");
+            if (_currentOrder.GenerateQuantity <= 0)
+            {
+                throw new ArgumentException("Generate quantity must be greater than zero for entrance orders.");
+            }
         }
 
         _generatedCount = 0;
-        _timer.Interval = _currentOrder.DelayGenerator * 1000; // Convert to milliseconds
         _isRunning = true;
-        _timer.Start();
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        // Start simulation loop in background
+        _simulationTask = Task.Run(() => SimulateLoopAsync(_cancellationTokenSource.Token));
+
+        await Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Main simulation loop - generates records with delay between each one.
+    /// </summary>
+    private async Task SimulateLoopAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+
+            if (_currentOrder?.Type == WeighingType.SprayChamberExit)
+            {
+                PrepareOringinOrder();
+            }
+
+            while (!cancellationToken.IsCancellationRequested && _currentOrder != null)
+            {
+                // Check if we should continue based on order type
+                if (_currentOrder.Type == WeighingType.SprayChamberEntrance)
+                {
+                    if (_generatedCount >= _currentOrder.GenerateQuantity)
+                    {
+                        FinalizeSimulation();
+                        break;
+                    }
+
+                    GenerateEntranceRecord();
+                }
+                else if (_currentOrder.Type == WeighingType.SprayChamberExit)
+                {
+                    if (!HasMoreItemsToExit())
+                    {
+                        FinalizeSimulation();
+                        break;
+                    }
+
+                    GenerateExitRecord();
+                }
+
+                _generatedCount++;
+
+                // Raise event to notify UI
+                DataGenerated?.Invoke(this, new SimulatorEventArgs(_currentOrder.Id, _generatedCount));
+
+                // Apply delay before next generation
+                if (_currentOrder.DelayGenerator > 0)
+                {
+                    await Task.Delay(_currentOrder.DelayGenerator, cancellationToken);
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Normal cancellation, no error
+        }
+        catch (Exception ex)
+        {
+            ErrorOccurred?.Invoke(this, ex.Message);
+            Stop();
+        }
+    }
+
+    private void PrepareOringinOrder()
+    {
+        _originOrder = _database.GetById<ProductionOrderModel>(_currentOrder.EntranceOrderNumber.Value);
+
+        if (_originOrder == null)
+        {
+            throw new InvalidOperationException("Entrance order not found or not configured.");
+        }
+
+        if (_originOrder.Notes == null || _originOrder.Notes.Count == 0)
+        {
+            throw new InvalidOperationException("Entrance order has no notes to process.");
+        }
     }
 
     /// <summary>
@@ -82,13 +163,13 @@ public class ProductionOrderSimulatorService : IDisposable
         }
 
         _isRunning = false;
-        _timer.Stop();
+        _cancellationTokenSource?.Cancel();
     }
 
     /// <summary>
     /// Resumes the simulator.
     /// </summary>
-    public void Resume()
+    public async Task ResumeAsync()
     {
         if (_isRunning || _currentOrder == null)
         {
@@ -96,7 +177,10 @@ public class ProductionOrderSimulatorService : IDisposable
         }
 
         _isRunning = true;
-        _timer.Start();
+        _cancellationTokenSource = new CancellationTokenSource();
+        _simulationTask = Task.Run(() => SimulateLoopAsync(_cancellationTokenSource.Token));
+
+        await Task.CompletedTask;
     }
 
     /// <summary>
@@ -105,7 +189,7 @@ public class ProductionOrderSimulatorService : IDisposable
     public void Stop()
     {
         _isRunning = false;
-        _timer.Stop();
+        _cancellationTokenSource?.Cancel();
         _currentOrder = null;
         _generatedCount = 0;
     }
@@ -159,12 +243,21 @@ public class ProductionOrderSimulatorService : IDisposable
         order.QuantityCarcasses = 0;
         order.TotalWeighing = 0;
 
-        // Reset item stocks for entrance orders
-        if (order.Type == WeighingType.SprayChamberEntrance && order.Items != null)
+        // Reset item stocks
+        if (order.Items != null)
         {
             foreach (var item in order.Items)
             {
-                item.SprayChamberStock = item.SprayChamberInitialStock;
+                if (order.Type == WeighingType.SprayChamberEntrance)
+                {
+                    // For entrance: revert to initial stock
+                    item.SprayChamberStock = item.SprayChamberInitialStock;
+                }
+                else if (order.Type == WeighingType.SprayChamberExit)
+                {
+                    // For exit: reset processed count to 0
+                    item.SprayChamberStock = 0;
+                }
             }
         }
 
@@ -172,41 +265,22 @@ public class ProductionOrderSimulatorService : IDisposable
         order.Status = ProductionOrderStatusType.Pending;
     }
 
-    private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
+    /// <summary>
+    /// Checks if there are more items available to exit from chambers.
+    /// </summary>
+    private bool HasMoreItemsToExit()
     {
-        if (_currentOrder == null || !_isRunning)
+        if (_currentOrder == null || _currentOrder.Items == null || _originOrder == null)
+            return false;
+
+        var isPendingItems = _currentOrder.Items.Any(x => x.SprayChamberStock > 0);
+
+        if (isPendingItems && _originOrder.Notes.Any(x => !x.ImportedToExitOrder))
         {
-            return;
+           return true; 
         }
 
-        try
-        {
-            // Generate one record
-            if (_currentOrder.Type == WeighingType.SprayChamberEntrance)
-            {
-                GenerateEntranceRecord();
-            }
-            else if (_currentOrder.Type == WeighingType.SprayChamberExit)
-            {
-                GenerateExitRecord();
-            }
-
-            _generatedCount++;
-
-            // Raise event
-            DataGenerated?.Invoke(this, new SimulatorEventArgs(_currentOrder.Id, _generatedCount));
-
-            // Check if reached limit
-            if (_generatedCount >= _currentOrder.GenerateQuantity)
-            {
-                FinalizeSimulation();
-            }
-        }
-        catch (Exception ex)
-        {
-            ErrorOccurred?.Invoke(this, ex.Message);
-            Stop();
-        }
+        return false; 
     }
 
     private void GenerateEntranceRecord()
@@ -318,63 +392,27 @@ public class ProductionOrderSimulatorService : IDisposable
 
     private void GenerateExitRecord()
     {
-        if (_currentOrder == null)
+        var orderedItem = _currentOrder?.Items?.Where(x => !x.SimulateExecuted).OrderBy(i => i.Sequential).FirstOrDefault();
+
+        if (orderedItem == null) return;
+
+        var selectedNote = _originOrder?.Notes.Where(x => x.SprayChamberId == orderedItem?.SprayChamberId
+                        && !x.ImportedToExitOrder).OrderBy(x => x.Id).FirstOrDefault();
+
+        if (selectedNote == null)
         {
-            throw new InvalidOperationException("No current order configured.");
+            orderedItem.SimulateExecuted = true;
+            return;
         }
 
-        // Get entrance order
-        ProductionOrderModel? entranceOrder = null;
-        
-        if (_currentOrder.EntranceOrderNumber.HasValue)
-        {
-            var allOrders = _database.GetAll<ProductionOrderModel>();
-            entranceOrder = allOrders.FirstOrDefault(o => o.Id == _currentOrder.EntranceOrderNumber.Value);
-        }
+        // Mark note as imported to exit order to avoid reuse
+        selectedNote.ImportedToExitOrder = true;
 
-        if (entranceOrder == null)
-        {
-            throw new InvalidOperationException("Entrance order not found or not configured.");
-        }
 
-        if (entranceOrder.Notes == null || entranceOrder.Notes.Count == 0)
-        {
-            throw new InvalidOperationException("Entrance order has no notes to process.");
-        }
-
-        // Find items with available stock
-        var itemsWithStock = _currentOrder.Items?
-            .Where(i => i.SprayChamberStock < i.SprayChamberInitialStock)
-            .ToList();
-
-        if (itemsWithStock == null || itemsWithStock.Count == 0)
-        {
-            throw new InvalidOperationException("No items with available stock for exit.");
-        }
-
-        // Select a random item
-        var randomItemIndex = _random.Next(0, itemsWithStock.Count);
-        var selectedItem = itemsWithStock[randomItemIndex];
-
-        // Find notes from entrance order for this chamber
-        var availableNotes = entranceOrder.Notes
-            .Where(n => n.SprayChamberId == selectedItem.SprayChamberId)
-            .Where(n => !_currentOrder.Notes.Any(en => en.Id == n.Id && en.SprayChamberId == n.SprayChamberId))
-            .ToList();
-
-        if (availableNotes.Count == 0)
-        {
-            throw new InvalidOperationException($"No available notes for chamber {selectedItem.SprayChamberId}.");
-        }
-
-        // Select a random note
-        var randomNoteIndex = _random.Next(0, availableNotes.Count);
-        var selectedNote = availableNotes[randomNoteIndex];
-
-        // Create exit note
+        // Create exit note (preserving all data from entrance)
         var exitNote = new ProductionNotesModel
         {
-            Id = selectedNote.Id,
+            Id = selectedNote.Id, // Keep same ID to track which entrance item was exited
             ProductionOrderId = _currentOrder.Id,
             ProductId = _currentOrder.ProductId,
             Product = _currentOrder.Product,
@@ -387,17 +425,18 @@ public class ProductionOrderSimulatorService : IDisposable
             Hammer = _currentOrder.Hammer,
             SprayChamberId = selectedNote.SprayChamberId,
             ClassificationId = selectedNote.ClassificationId,
-            Weight = selectedNote.Weight
+            Weight = selectedNote.Weight // Preserve original weight
         };
 
         // Update stocks and counters
-        var chamber = _database.GetById<SprayChamberModel>(selectedItem.SprayChamberId);
+        var chamber = _database.GetById<SprayChamberModel>(orderedItem.SprayChamberId);
         if (chamber != null)
         {
-            chamber.Stock--;
+            chamber.Stock--; // Decrement chamber stock (item leaving)            
         }
 
-        selectedItem.SprayChamberStock++;
+        // For exit orders, SprayChamberStock tracks how many have been processed
+        orderedItem.SprayChamberStock--; // Decrement stock
         _currentOrder.QuantityCarcasses++;
         _currentOrder.TotalWeighing += exitNote.Weight;
         _currentOrder.Notes.Add(exitNote);
@@ -422,7 +461,8 @@ public class ProductionOrderSimulatorService : IDisposable
 
     public void Dispose()
     {
-        _timer?.Dispose();
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
     }
 }
 

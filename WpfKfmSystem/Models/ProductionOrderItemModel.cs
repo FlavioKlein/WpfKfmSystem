@@ -46,5 +46,10 @@ public class ProductionOrderItemModel : BaseModel
     /// <summary>
     /// Gets or sets the list of accepted classification identifiers.
     /// </summary>
-    public int[] AcceptClassificationIds { get; set; } = [];    
+    public int[] AcceptClassificationIds { get; set; } = [];
+
+    /// <summary>
+    /// Helper property to determine if the item was simulate executed.
+    /// </summary>
+    public bool SimulateExecuted { get; set; }
 }

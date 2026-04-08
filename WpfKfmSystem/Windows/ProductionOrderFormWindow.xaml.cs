@@ -1,10 +1,6 @@
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
-using System.Windows.Threading;
 using WpfPorkProcessSystem.Enums;
-using WpfPorkProcessSystem.Interfaces;
 using WpfPorkProcessSystem.Models;
 using WpfPorkProcessSystem.Services;
 using WpfPorkProcessSystem.Windows.Base;
@@ -17,8 +13,6 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
     private readonly SprayChamberService _sprayChamberService;
     private readonly ClassificationWeighingService _classificationService;
     private readonly WeighingScaleService _weighingScaleService;
-    private ProductionOrderSimulatorService? _simulatorService;
-    private DispatcherTimer? _autoRefreshTimer;
     private ObservableCollection<ProductionOrderItemModel> _items;
 
     public ProductionOrderFormWindow() : base()
@@ -32,9 +26,8 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
 
         base.TxtValidation = TxtValidation;
         InitializeComboBoxes();
-        InitializeAutoRefreshTimer();
         DgItems.ItemsSource = _items;
-        CmbStatus.Focus();
+        CmbType.Focus();
     }
 
     public ProductionOrderFormWindow(int id) : base(id)
@@ -48,55 +41,12 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
 
         base.TxtValidation = TxtValidation;
         InitializeComboBoxes();
-        InitializeAutoRefreshTimer();
         DgItems.ItemsSource = _items;
         LoadData();
     }
 
-    private void InitializeAutoRefreshTimer()
-    {
-        _autoRefreshTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(2)
-        };
-        _autoRefreshTimer.Tick += AutoRefreshTimer_Tick;
-    }
-
-    private void AutoRefreshTimer_Tick(object? sender, EventArgs e)
-    {
-        if (Id.HasValue && ChkAutoRefresh.IsChecked == true)
-        {
-            RefreshFormData();
-        }
-    }
-
-    private void RefreshFormData()
-    {
-        var model = base.Service.GetById(Id.Value);
-        if (model != null)
-        {
-            // Update only dynamic fields (stocks, notes count, etc.)
-            TxtQuantityCarcasses.Text = model.QuantityCarcasses.ToString();
-            TxtTotalWeighing.Text = model.TotalWeighing.ToString();
-
-            // Refresh items (stocks may have changed)
-            _items.Clear();
-            if (model.Items != null)
-            {
-                foreach (var item in model.Items)
-                {
-                    _items.Add(item);
-                }
-            }
-        }
-    }
-
     private void InitializeComboBoxes()
     {
-        // Status ComboBox
-        CmbStatus.ItemsSource = Enum.GetValues(typeof(ProductionOrderStatusType));
-        CmbStatus.SelectedIndex = 0;
-
         // Type ComboBox
         CmbType.ItemsSource = Enum.GetValues(typeof(WeighingType));
         CmbType.SelectedIndex = 0;
@@ -132,7 +82,7 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
         PnlId.Visibility = Visibility.Visible;
         TxtIdDisplay.Text = model.Id.ToString();
 
-        CmbStatus.SelectedItem = model.Status;
+        TxtStatus.Text = model.Status.ToString();
         CmbType.SelectedItem = model.Type;
         CmbProduct.SelectedValue = model.ProductId;
         CmbWeighingScale.SelectedValue = model.WeighingScaleId;
@@ -149,11 +99,11 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
         TxtQuantityCarcasses.Text = model.QuantityCarcasses.ToString();
         TxtTotalWeighing.Text = model.TotalWeighing.ToString();
 
-        // Simulator fields
-        TxtLowerLimitWeight.Text = model.LowerLimitWeight.ToString();
-        TxtUpperLimitWeight.Text = model.UpperLimitWeight.ToString();
-        TxtDelayGenerator.Text = model.DelayGenerator.ToString();
-        TxtGenerateQuantity.Text = model.GenerateQuantity.ToString();
+        // For Exit orders, set the entrance order combo
+        if (model.Type == WeighingType.SprayChamberExit && model.EntranceOrderNumber.HasValue)
+        {
+            CmbEntranceOrder.SelectedValue = model.EntranceOrderNumber.Value;
+        }
 
         // Load items
         if (model.Items != null && model.Items.Any())
@@ -167,15 +117,23 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
 
         // Show/hide entrance fields based on type
         UpdateEntranceFieldsVisibility();
-        UpdateFieldsBasedOnStatus();
     }
 
     protected override ProductionOrderModel FormDataToModel()
     {
+        var isNewOrder = !Id.HasValue;
+        ProductionOrderModel? existingModel = null;
+
+        // Get existing model to preserve simulator configuration and other data
+        if (!isNewOrder)
+        {
+            existingModel = base.Service.GetById(Id.Value);
+        }
+
         var model = new ProductionOrderModel
         {
             Id = Id ?? 0,
-            Status = (ProductionOrderStatusType)(CmbStatus.SelectedItem ?? ProductionOrderStatusType.Pending),
+            Status = existingModel?.Status ?? ProductionOrderStatusType.Pending,
             Type = (WeighingType)(CmbType.SelectedItem ?? WeighingType.SprayChamberEntrance),
             ProductId = CmbProduct.SelectedValue != null ? (int)CmbProduct.SelectedValue : 0,
             Product = CmbProduct.SelectedItem as ProductModel,
@@ -188,14 +146,30 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
             Hammer = TxtHammer.Text.Trim(),
             Description = TxtDescription.Text.Trim(),
             QuantityCarcasses = int.TryParse(TxtQuantityCarcasses.Text, out var qtyCarcasses) ? qtyCarcasses : 0,
-            TotalWeighing = int.TryParse(TxtTotalWeighing.Text, out var totalWeight) ? totalWeight : 0,
-            LowerLimitWeight = int.TryParse(TxtLowerLimitWeight.Text, out var lowerLimit) ? lowerLimit : 0,
-            UpperLimitWeight = int.TryParse(TxtUpperLimitWeight.Text, out var upperLimit) ? upperLimit : 0,
-            DelayGenerator = int.TryParse(TxtDelayGenerator.Text, out var delay) ? delay : 0,
-            GenerateQuantity = int.TryParse(TxtGenerateQuantity.Text, out var genQty) ? genQty : 0,
+            TotalWeighing = int.TryParse(TxtTotalWeighing.Text, out var totalWeight) ? totalWeight : 0,            
             Items = _items.ToList(),
-            Notes = new System.Collections.Generic.List<ProductionNotesModel>()
+            Notes = existingModel?.Notes ?? new System.Collections.Generic.List<ProductionNotesModel>()
         };
+
+        // Preserve simulator configuration (from existing model or set to 0 for new orders)
+        model.LowerLimitWeight = existingModel?.LowerLimitWeight ?? 0;
+        model.UpperLimitWeight = existingModel?.UpperLimitWeight ?? 0;
+        model.DelayGenerator = existingModel?.DelayGenerator ?? 0;
+        model.GenerateQuantity = existingModel?.GenerateQuantity ?? 0;
+
+        // For Exit orders, set entrance order number from combo box
+        if (model.Type == WeighingType.SprayChamberExit)
+        {
+            if (CmbEntranceOrder.SelectedValue != null)
+            {
+                model.EntranceOrderNumber = (int)CmbEntranceOrder.SelectedValue;
+            }
+            else if (existingModel != null)
+            {
+                // Preserve existing value if combo is not selected (editing)
+                model.EntranceOrderNumber = existingModel.EntranceOrderNumber;
+            }
+        }
 
         return model;
     }
@@ -239,6 +213,17 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
             return false;
         }
 
+        // For Exit orders, validate that an entrance order is selected
+        if (CmbType.SelectedItem != null && (WeighingType)CmbType.SelectedItem == WeighingType.SprayChamberExit)
+        {
+            if (CmbEntranceOrder.SelectedItem == null)
+            {
+                ShowValidationError("Please select an Entrance Order for this Exit order.");
+                CmbEntranceOrder.Focus();
+                return false;
+            }
+        }
+
         // Validate items - Both entrance and exit orders should have items
         if (_items.Count == 0)
         {
@@ -279,9 +264,20 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
 
     private void BtnAddItem_Click(object sender, RoutedEventArgs e)
     {
-        var itemWindow = new ProductionOrderItemFormWindow(_sprayChamberService, _classificationService);
+        var orderType = (WeighingType)(CmbType.SelectedItem ?? WeighingType.SprayChamberEntrance);
+        var itemWindow = new ProductionOrderItemFormWindow(_sprayChamberService, _classificationService, orderType);
         if (itemWindow.ShowDialog() == true && itemWindow.Item != null)
         {
+            // Validate: Check if chamber already exists in the list
+            if (_items.Any(i => i.SprayChamberId == itemWindow.Item.SprayChamberId))
+            {
+                MessageBox.Show($"A chamber with ID {itemWindow.Item.SprayChamberId} is already added to this order. Each chamber can only be added once.",
+                                "Duplicate Chamber",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                return;
+            }
+
             // Set sequential
             itemWindow.Item.Sequential = _items.Count + 1;
             _items.Add(itemWindow.Item);
@@ -292,9 +288,20 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
     {
         if (DgItems.SelectedItem is ProductionOrderItemModel selectedItem)
         {
-            var itemWindow = new ProductionOrderItemFormWindow(_sprayChamberService, _classificationService, selectedItem);
+            var orderType = (WeighingType)(CmbType.SelectedItem ?? WeighingType.SprayChamberEntrance);
+            var itemWindow = new ProductionOrderItemFormWindow(_sprayChamberService, _classificationService, selectedItem, orderType);
             if (itemWindow.ShowDialog() == true && itemWindow.Item != null)
             {
+                // Validate: Check if the new chamber already exists (excluding the current item)
+                if (_items.Any(i => i.SprayChamberId == itemWindow.Item.SprayChamberId && i.Sequential != selectedItem.Sequential))
+                {
+                    MessageBox.Show($"A chamber with ID {itemWindow.Item.SprayChamberId} is already added to this order. Each chamber can only be added once.",
+                                    "Duplicate Chamber",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    return;
+                }
+
                 var index = _items.IndexOf(selectedItem);
                 if (index >= 0)
                 {
@@ -336,206 +343,5 @@ public partial class ProductionOrderFormWindow : ProductionOrderFormWindowBase
     {
         DialogResult = false;
         Close();
-    }
-
-    private void CmbStatus_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-    {
-        if (CmbStatus.SelectedItem != null)
-        {
-            UpdateFieldsBasedOnStatus();
-            HandleStatusChange();
-        }
-    }
-
-    private void UpdateFieldsBasedOnStatus()
-    {
-        if (CmbStatus.SelectedItem == null) return;
-
-        var status = (ProductionOrderStatusType)CmbStatus.SelectedItem;
-        var isExecuting = status == ProductionOrderStatusType.Executing;
-        var isFinalized = status == ProductionOrderStatusType.Finalized;
-
-        // Lock header fields when executing or finalized
-        var isHeaderEnabled = !isExecuting && !isFinalized;
-        CmbType.IsEnabled = isHeaderEnabled;
-        CmbProduct.IsEnabled = isHeaderEnabled;
-        CmbWeighingScale.IsEnabled = isHeaderEnabled;
-        DtpExecutionDate.IsEnabled = isHeaderEnabled;
-        DtpExpirationDate.IsEnabled = isHeaderEnabled;
-        DtpFacturingDate.IsEnabled = isHeaderEnabled;
-        TxtShift.IsEnabled = isHeaderEnabled;
-        TxtBatch.IsEnabled = isHeaderEnabled;
-        TxtHammer.IsEnabled = isHeaderEnabled;
-        TxtDescription.IsEnabled = isHeaderEnabled;
-        TxtLowerLimitWeight.IsEnabled = isHeaderEnabled;
-        TxtUpperLimitWeight.IsEnabled = isHeaderEnabled;
-        TxtDelayGenerator.IsEnabled = isHeaderEnabled;
-        TxtGenerateQuantity.IsEnabled = isHeaderEnabled;
-
-        // Item buttons - allow add only when executing, disable all when finalized
-        BtnAddItem.IsEnabled = !isFinalized;
-        BtnEditItem.IsEnabled = !isExecuting && !isFinalized;
-        BtnRemoveItem.IsEnabled = !isExecuting && !isFinalized;
-
-        // Enable/disable auto-refresh checkbox
-        ChkAutoRefresh.IsEnabled = Id.HasValue && (isExecuting || status == ProductionOrderStatusType.Paused);
-
-        // Clear simulation button only when finalized
-        BtnClearSimulation.IsEnabled = Id.HasValue && isFinalized;
-
-        // Save button disabled when executing or finalized
-        BtnSave.IsEnabled = !isExecuting && !isFinalized;
-    }
-
-    private void HandleStatusChange()
-    {
-        if (!Id.HasValue) return; // Only for existing orders
-
-        var status = (ProductionOrderStatusType)CmbStatus.SelectedItem;
-        var model = base.Service.GetById(Id.Value);
-        if (model == null) return;
-
-        model.Status = status;
-
-        try
-        {
-            switch (status)
-            {
-                case ProductionOrderStatusType.Executing:
-                    StartSimulator(model);
-                    if (ChkAutoRefresh.IsChecked == true)
-                    {
-                        _autoRefreshTimer?.Start();
-                    }
-                    break;
-
-                case ProductionOrderStatusType.Paused:
-                    PauseSimulator();
-                    _autoRefreshTimer?.Stop();
-                    break;
-
-                case ProductionOrderStatusType.Finalized:
-                    StopSimulator();
-                    _autoRefreshTimer?.Stop();
-                    ChkAutoRefresh.IsChecked = false;
-                    break;
-
-                case ProductionOrderStatusType.Pending:
-                    StopSimulator();
-                    _autoRefreshTimer?.Stop();
-                    ChkAutoRefresh.IsChecked = false;
-                    break;
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error updating status: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            return;
-        }
-    }
-
-    private void StartSimulator(ProductionOrderModel model)
-    {
-        if (_simulatorService == null)
-        {
-            _simulatorService = new ProductionOrderSimulatorService();
-            _simulatorService.DataGenerated += OnSimulatorDataGenerated;
-            _simulatorService.SimulatorFinalized += OnSimulatorFinalized;
-            _simulatorService.ErrorOccurred += OnSimulatorError;
-        }
-
-        _simulatorService.Start(model.Id);
-    }
-
-    private void PauseSimulator()
-    {
-        _simulatorService?.Pause();
-    }
-
-    private void StopSimulator()
-    {
-        if (_simulatorService != null)
-        {
-            _simulatorService.Stop();
-            _simulatorService.DataGenerated -= OnSimulatorDataGenerated;
-            _simulatorService.SimulatorFinalized -= OnSimulatorFinalized;
-            _simulatorService.ErrorOccurred -= OnSimulatorError;
-            _simulatorService = null;
-        }
-    }
-
-    private void OnSimulatorDataGenerated(object? sender, SimulatorEventArgs e)
-    {
-        Dispatcher.Invoke(() =>
-        {
-            // Auto-refresh will update the UI if enabled
-            if (ChkAutoRefresh.IsChecked == true)
-            {
-                RefreshFormData();
-            }
-        });
-    }
-
-    private void OnSimulatorFinalized(object? sender, SimulatorEventArgs e)
-    {
-        Dispatcher.Invoke(() =>
-        {
-            MessageBox.Show("Simulation completed! All configured records have been generated.", 
-                            "Simulation Finished", 
-                            MessageBoxButton.OK, 
-                            MessageBoxImage.Information);
-            RefreshFormData();
-            StopSimulator();
-        });
-    }
-
-    private void OnSimulatorError(object? sender, string errorMessage)
-    {
-        Dispatcher.Invoke(() =>
-        {
-            MessageBox.Show($"Simulator error: {errorMessage}", 
-                            "Error", 
-                            MessageBoxButton.OK, 
-                            MessageBoxImage.Error);
-            StopSimulator();
-        });
-    }
-
-    private void BtnClearSimulation_Click(object sender, RoutedEventArgs e)
-    {
-        if (!Id.HasValue) return;
-
-        var result = MessageBox.Show(
-            "This will clear all simulation data (notes) and revert chamber stocks to their initial state. Continue?",
-            "Confirm Clear Simulation",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning);
-
-        if (result == MessageBoxResult.Yes)
-        {
-            try
-            {
-                var model = base.Service.GetById(Id.Value);
-                if (model != null)
-                {
-                    var simulatorService = new ProductionOrderSimulatorService();
-                    simulatorService.ClearSimulation(model.Id);
-
-                    MessageBox.Show("Simulation data cleared successfully!", 
-                                    "Success", 
-                                    MessageBoxButton.OK, 
-                                    MessageBoxImage.Information);
-
-                    RefreshFormData();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error clearing simulation: {ex.Message}", 
-                                "Error", 
-                                MessageBoxButton.OK, 
-                                MessageBoxImage.Error);
-            }
-        }
     }
 }

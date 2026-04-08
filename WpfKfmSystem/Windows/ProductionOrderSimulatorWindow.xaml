@@ -1,0 +1,331 @@
+<Window x:Class="WpfPorkProcessSystem.Windows.ProductionOrderSimulatorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfPorkProcessSystem.Windows"
+        mc:Ignorable="d"
+        Title="Production Order Simulator" 
+        Height="850" 
+        Width="950"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Closing="Window_Closing">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Título -->
+        <TextBlock Grid.Row="0" 
+                   Text="Production Order Simulator" 
+                   FontSize="20" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,20"/>
+
+        <!-- Seleção da Ordem de Produção -->
+        <GroupBox Grid.Row="1" Header="Select Production Order" Padding="15" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Production Order:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+                    <ComboBox x:Name="CmbProductionOrder" 
+                              Padding="5" 
+                              FontSize="14" 
+                              SelectionChanged="CmbProductionOrder_SelectionChanged">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="ID: "/><Run Text="{Binding Id}" FontWeight="Bold"/>
+                                    <Run Text=" | Type: "/><Run Text="{Binding Type}"/>
+                                    <Run Text=" | Product: "/><Run Text="{Binding Product.Name}"/>
+                                    <Run Text=" | Status: "/><Run Text="{Binding Status}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <Button Grid.Column="2" 
+                        x:Name="BtnLoadOrder"
+                        Content="Load Order" 
+                        Width="120" 
+                        Height="35"
+                        VerticalAlignment="Bottom"
+                        Click="BtnLoadOrder_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#2196F3"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#0b7dda"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </GroupBox>
+
+        <!-- Configuração do Simulador -->
+        <GroupBox Grid.Row="2" Header="Simulator Configuration" Padding="15" Margin="0,0,0,15" x:Name="GrpSimulatorConfig">
+            <StackPanel>
+                <!-- Lower/Upper Limit Weight -->
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Lower Limit Weight (kg):*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+                        <TextBox x:Name="TxtLowerLimitWeight" Padding="5" FontSize="14"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Upper Limit Weight (kg):*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+                        <TextBox x:Name="TxtUpperLimitWeight" Padding="5" FontSize="14"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Delay/Generate Quantity -->
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Delay (seconds):*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+                        <ComboBox x:Name="CmbDelayGenerator" IsEditable="True" Padding="5" FontSize="14"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Generate Quantity:*" FontWeight="Bold" Margin="0,0,0,5" TextAlignment="Left"/>
+                        <TextBox x:Name="TxtGenerateQuantity" Padding="5" FontSize="14"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Simulator Controls -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="BtnSaveConfig" 
+                            Grid.Column="0"
+                            Content="Save Config" 
+                            Width="120" 
+                            Height="35"
+                            Click="BtnSaveConfig_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#2196F3"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#0b7dda"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button x:Name="BtnStart" 
+                            Grid.Column="2"
+                            Content="Start" 
+                            Width="100" 
+                            Height="35"
+                            Click="BtnStart_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#4CAF50"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#45a049"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button x:Name="BtnPauseResume" 
+                            Grid.Column="4"
+                            Content="Pause" 
+                            Width="100" 
+                            Height="35"
+                            Click="BtnPauseResume_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#FF9800"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#e68900"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button x:Name="BtnClearSimulation" 
+                            Grid.Column="6"
+                            Content="Clear Simulation" 
+                            Width="150" 
+                            Height="35"
+                            Click="BtnClearSimulation_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#9C27B0"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#7B1FA2"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <CheckBox x:Name="ChkAutoRefresh" 
+                              Grid.Column="8"
+                              Content="Auto-refresh (every 2s)" 
+                              VerticalAlignment="Center" 
+                              FontSize="14"
+                              IsChecked="True"/>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Dados da Ordem -->
+        <GroupBox Grid.Row="3" Header="Order Data and Items" Padding="15" x:Name="GrpOrderData">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Order Info -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Order ID:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtOrderId" IsReadOnly="True" Background="#F0F0F0" Padding="5"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Status:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtStatus" IsReadOnly="True" Background="#F0F0F0" Padding="5"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="4">
+                        <TextBlock Text="Qty Carcasses:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtQuantityCarcasses" IsReadOnly="True" Background="#F0F0F0" Padding="5"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="6">
+                        <TextBlock Text="Total Weight:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtTotalWeighing" IsReadOnly="True" Background="#F0F0F0" Padding="5"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Items DataGrid -->
+                <Border Grid.Row="2" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="3">
+                    <DataGrid x:Name="DgItems" 
+                              AutoGenerateColumns="False" 
+                              IsReadOnly="True"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              GridLinesVisibility="Horizontal"
+                              HeadersVisibility="Column"
+                              AlternatingRowBackground="#F5F5F5">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sequential" Binding="{Binding Sequential}" Width="100"/>
+                            <DataGridTextColumn Header="Spray Chamber ID" Binding="{Binding SprayChamberId}" Width="140"/>
+                            <DataGridTextColumn Header="Capacity" Binding="{Binding SprayChamberCapacity}" Width="100"/>
+                            <DataGridTextColumn Header="Initial Stock" Binding="{Binding SprayChamberInitialStock}" Width="120"/>
+                            <DataGridTextColumn Header="Current Stock" Binding="{Binding SprayChamberStock}" Width="110"/>
+                            <DataGridTextColumn Header="Accept Classifications" Binding="{Binding AcceptClassifications}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </GroupBox>
+
+        <!-- Mensagens e Botão Fechar -->
+        <StackPanel Grid.Row="4" Margin="0,15,0,0">
+            <!-- Validation Message -->
+            <TextBlock x:Name="TxtValidation" 
+                       Foreground="Red" 
+                       TextWrapping="Wrap"
+                       Visibility="Collapsed"
+                       Margin="0,0,0,10"/>
+
+            <!-- Close Button -->
+            <Button x:Name="BtnClose" 
+                    Content="Close" 
+                    Width="100" 
+                    Height="35"
+                    HorizontalAlignment="Right"
+                    Click="BtnClose_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="#f44336"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#da190b"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -21,4 +21,10 @@ public class ProductionNotesModel : BaseModel
     public int? ClassificationId { get; set; }
     public int SprayChamberId { get; set; }
     public int Weight { get; set; }
+
+    /// <summary>
+    /// Helper property to determine if the item was imported from an entrance order 
+    /// to an exit order on exit simulation.
+    /// </summary>
+    public bool ImportedToExitOrder { get; set; }
 }

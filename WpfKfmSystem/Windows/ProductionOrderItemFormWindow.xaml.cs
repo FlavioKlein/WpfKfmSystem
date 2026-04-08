@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using WpfPorkProcessSystem.Enums;
 using WpfPorkProcessSystem.Models;
 using WpfPorkProcessSystem.Services;
 
@@ -13,31 +14,54 @@ public partial class ProductionOrderItemFormWindow : Window
     private readonly SprayChamberService _sprayChamberService;
     private readonly ClassificationWeighingService _classificationService;
     private readonly bool _editMode;
+    private readonly WeighingType _orderType;
     private List<ClassificationWeighingModel> _allClassifications;
 
     public ProductionOrderItemModel? Item { get; private set; }
 
-    public ProductionOrderItemFormWindow(SprayChamberService sprayChamberService, ClassificationWeighingService classificationService)
+    public ProductionOrderItemFormWindow(SprayChamberService sprayChamberService, ClassificationWeighingService classificationService, WeighingType orderType)
     {
         InitializeComponent();
         _sprayChamberService = sprayChamberService;
         _classificationService = classificationService;
+        _orderType = orderType;
         _editMode = false;
         _allClassifications = new List<ClassificationWeighingModel>();
-        
+
         InitializeData();
+        UpdateUIForOrderType();
     }
 
-    public ProductionOrderItemFormWindow(SprayChamberService sprayChamberService, ClassificationWeighingService classificationService, ProductionOrderItemModel item)
+    public ProductionOrderItemFormWindow(SprayChamberService sprayChamberService, ClassificationWeighingService classificationService, ProductionOrderItemModel item, WeighingType orderType)
     {
         InitializeComponent();
         _sprayChamberService = sprayChamberService;
         _classificationService = classificationService;
+        _orderType = orderType;
         _editMode = true;
         _allClassifications = new List<ClassificationWeighingModel>();
-        
+
         InitializeData();
+        UpdateUIForOrderType();
         FillForm(item);
+    }
+
+    private void UpdateUIForOrderType()
+    {
+        // For Exit orders, hide classifications section (FIFO/FEFO logic)
+        // Classifications grid is at row 2
+        if (_orderType == WeighingType.SprayChamberExit)
+        {
+            // Find the Grid at row 2 (Accept Classifications Section) and hide it
+            foreach (var child in ((System.Windows.Controls.Grid)Content).Children)
+            {
+                if (child is System.Windows.Controls.Grid grid && System.Windows.Controls.Grid.GetRow(grid) == 2)
+                {
+                    grid.Visibility = Visibility.Collapsed;
+                    break;
+                }
+            }
+        }
     }
 
     private void InitializeData()
@@ -126,12 +150,17 @@ public partial class ProductionOrderItemFormWindow : Window
             return false;
         }
 
-        var selectedClassifications = GetSelectedClassifications();
-        if (!selectedClassifications.Any())
+        // For Entrance orders, require at least one classification
+        // For Exit orders, classifications are not needed (FIFO/FEFO logic)
+        if (_orderType == WeighingType.SprayChamberEntrance)
         {
-            TxtValidation.Text = "Please select at least one classification.";
-            TxtValidation.Visibility = Visibility.Visible;
-            return false;
+            var selectedClassifications = GetSelectedClassifications();
+            if (!selectedClassifications.Any())
+            {
+                TxtValidation.Text = "Please select at least one classification.";
+                TxtValidation.Visibility = Visibility.Visible;
+                return false;
+            }
         }
 
         return true;
@@ -140,6 +169,11 @@ public partial class ProductionOrderItemFormWindow : Window
     private List<int> GetSelectedClassifications()
     {
         var selected = new List<int>();
+
+        // For Exit orders, return empty list (no classifications needed)
+        if (_orderType == WeighingType.SprayChamberExit)
+            return selected;
+
         foreach (var checkBox in GetAllCheckBoxes())
         {
             if (checkBox.IsChecked == true && checkBox.Tag is int classificationId)
@@ -174,7 +208,14 @@ public partial class ProductionOrderItemFormWindow : Window
             {
                 SprayChamberId = chamber?.Id ?? 0,
                 SprayChamberCapacity = chamber?.Capacity ?? 0,
+                
+                // For ENTRANCE orders: Stock starts at current chamber stock
+                // For EXIT orders: Stock starts at 0 (will increment as items are processed)
+                //SprayChamberStock = _orderType == WeighingType.SprayChamberExit ? 0 : (chamber?.Stock ?? 0),
+
                 SprayChamberStock = chamber?.Stock ?? 0,
+                
+                // Initial stock is always the current chamber stock (how many items are available)
                 SprayChamberInitialStock = chamber?.Stock ?? 0,
                 AcceptClassificationIds = selectedClassificationIds.ToArray(),
                 AcceptClassifications = GetClassificationNames(selectedClassificationIds)

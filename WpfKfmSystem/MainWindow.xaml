@@ -19,6 +19,8 @@
             </MenuItem>
             <MenuItem Header="_Operation">
                 <MenuItem Header="_Production Order" Click="MenuProductionOrder_Click"/>
+                <Separator/>
+                <MenuItem Header="_Simulator" Click="MenuSimulator_Click"/>
             </MenuItem>
             <MenuItem Header="_Reports">
                 <MenuItem Header="Chamber Status" Click="MenuRepChambers_Click"/>
